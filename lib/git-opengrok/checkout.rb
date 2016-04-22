@@ -6,7 +6,12 @@ module GitOpenGrok
     end
 
     def apply
-      FileUtils.mkdir_p "#{@destination}/branches/master"
+      root = Git.init(@destination)
+      root.add_remote('origin', @remote_url)
+      root.fetch
+      root.branches.remote.each do |branch|
+        Git.clone(@remote_url, "#{@destination}/branches/#{branch.name}", :branch => branch.name)
+      end
     end
   end
 end
