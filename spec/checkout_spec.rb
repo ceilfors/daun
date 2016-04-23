@@ -27,4 +27,11 @@ describe 'checkout' do
       expect(File).to exist("#{destination}/branches/master/foo.txt")
     end
   end
+
+  it 'checks out other branches'
+  it 'checks out tags'
+  it 'deletes branch which have been deleted in remote'
+  it 'deletes tag which have been deleted in remote'
+  it 'adds new branch which have been added after the first checkout'
+  it 'does not check out anything other than the branches and tags to avoid clutter'
 end
