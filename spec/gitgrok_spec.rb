@@ -1,10 +1,7 @@
 require 'spec_helper'
-require 'git-opengrok/checkout'
-require 'tmpdir'
-require 'git'
-require 'fileutils'
+require 'git-opengrok/gitgrok'
 
-describe 'checkout' do
+describe 'gitgrok' do
   it 'checks out master branch' do
     Dir.mktmpdir do |dir|
       # Preparation
@@ -13,8 +10,8 @@ describe 'checkout' do
 
       # Execute
       destination = File.join(dir, 'repository')
-      checkout = GitOpenGrok::Checkout.new(destination, bare_repository)
-      checkout.apply
+      GitGrok.new.init bare_repository, destination
+      GitGrok.new.checkout destination
 
       # Verification
       expect(File).to exist("#{destination}/branches/master")

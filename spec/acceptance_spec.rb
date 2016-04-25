@@ -1,13 +1,11 @@
 require 'spec_helper'
 require 'git-opengrok/cli'
 
-describe 'cli' do
-  it "should print help when help subcommand is used" do
-    expect { GitOpenGrok::CLI.start %w{ help } }.to output(/Commands:/).to_stdout
-  end
-
-  it "should not print to stdout when subcommand is unrecognized" do
-    expect { GitOpenGrok::CLI.start %w{ foo } }.not_to output(/Commands:/).to_stdout
+describe 'gitgrok cli' do
+  it "has init and checkout commands" do
+    # KLUDGE: Somehow the output from help is not `gitgrok`
+    expect { GitOpenGrok::CLI.start ['help'] }.to output(/rspec checkout/).to_stdout
+    expect { GitOpenGrok::CLI.start ['help'] }.to output(/rspec init/).to_stdout
   end
 
   it "checks out master branch successfully" do
@@ -18,8 +16,8 @@ describe 'cli' do
 
       # Execute
       destination = File.join(dir, 'repository')
-      expect { GitOpenGrok::CLI.start %W{ init #{destination} #{bare_repository}} }.not_to output(/Could not find command/).to_stderr
-      expect { GitOpenGrok::CLI.start %W{ checkout -C #{destination} } }.not_to output(/Could not find command/).to_stderr
+      GitOpenGrok::CLI.start %W{ init #{bare_repository} #{destination}}
+      GitOpenGrok::CLI.start %W{ checkout --directory #{destination} }
 
       # Verification
       expect(File).to exist("#{destination}/branches/master")
