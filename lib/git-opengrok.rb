@@ -1,4 +1,3 @@
-require "git"
 require "git-opengrok/version"
 
 module GitOpenGrok

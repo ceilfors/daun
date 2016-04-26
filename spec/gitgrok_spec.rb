@@ -6,7 +6,7 @@ describe 'gitgrok' do
     Dir.mktmpdir do |dir|
       # Preparation
       bare_repository = File.join(dir, 'bare-repository')
-      create_bare_repository bare_repository
+      create_test_repository bare_repository
 
       # Execute
       destination = File.join(dir, 'repository')
@@ -19,7 +19,6 @@ describe 'gitgrok' do
     end
   end
 
-  it 'checks out other branches'
   it 'checks out tags'
   it 'deletes branch which have been deleted in remote'
   it 'deletes tag which have been deleted in remote'

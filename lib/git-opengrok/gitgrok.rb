@@ -1,17 +1,18 @@
-require 'git'
+require 'rugged'
 
 class GitGrok
 
   def init(remote_url, destination)
-    g = Git.init(destination)
-    g.add_remote('origin', remote_url)
-    g.fetch
+    repo = Rugged::Repository.init_at(destination)
+    repo.remotes.create('origin', remote_url)
+    repo.fetch 'origin'
   end
 
   def checkout(repository)
-    g = Git.open(repository)
-    g.branches.remote.each do |branch|
-      Git.clone(g.remote('origin').url, "#{repository}/branches/#{branch.name}", :branch => branch.name)
+    repo = Rugged::Repository.new(repository)
+    repo.branches.each_name(:remote) do |branch|
+      local_branch_name = branch[/origin\/(.*)/, 1]
+      Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/branches/#{local_branch_name}", {:checkout_branch => local_branch_name})
     end
   end
 end

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'git', '~> 1.3'
 gem 'thor', '~> 0.19.1'
+gem 'rugged', '~> 0.23.3', submodules: true
 
 # Specify your gem's dependencies in git-opengrok.gemspec
 gemspec

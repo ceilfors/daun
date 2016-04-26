@@ -12,7 +12,7 @@ describe 'gitgrok cli' do
     Dir.mktmpdir do |dir|
       # Preparation
       bare_repository = File.join(dir, 'bare-repository')
-      create_bare_repository bare_repository
+      create_test_repository bare_repository
 
       # Execute
       destination = File.join(dir, 'repository')
