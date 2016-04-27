@@ -2,37 +2,27 @@ require 'spec_helper'
 require 'git-opengrok/gitgrok'
 
 describe 'gitgrok' do
-  it 'checks out master branch' do
-    Dir.mktmpdir do |dir|
-      # Preparation
-      bare_repository = File.join(dir, 'bare-repository')
-      create_test_repository bare_repository
-
-      # Execute
-      destination = File.join(dir, 'repository')
-      GitGrok.new.init bare_repository, destination
-      GitGrok.new.checkout destination
-
-      # Verification
-      expect(File).to exist("#{destination}/branches/master")
-      expect(File).to exist("#{destination}/branches/master/foo.txt")
+  context 'when checking out test repository' do
+    before(:context) do
+      @tmpdir = Dir.mktmpdir
+      bare_repository = create_test_repository File.join(@tmpdir, 'bare-repository')
+      @repository = File.join(@tmpdir, 'repository')
+      GitGrok.new.init bare_repository, @repository
+      GitGrok.new.checkout @repository
     end
-  end
 
-  it 'checks out other branches' do
-    Dir.mktmpdir do |dir|
-      # Preparation
-      bare_repository = File.join(dir, 'bare-repository')
-      create_test_repository bare_repository
+    after(:context) do
+      FileUtils.rm_rf(@tmpdir)
+    end
 
-      # Execute
-      destination = File.join(dir, 'repository')
-      GitGrok.new.init bare_repository, destination
-      GitGrok.new.checkout destination
+    it 'checks out master branch' do
+      expect(File).to exist("#{@repository}/branches/master")
+      expect(File).to exist("#{@repository}/branches/master/foo.txt")
+    end
 
-      # Verification
-      expect(File).to exist("#{destination}/branches/other")
-      expect(File).to exist("#{destination}/branches/other/foo.txt")
+    it 'checks out other branch' do
+      expect(File).to exist("#{@repository}/branches/other")
+      expect(File).to exist("#{@repository}/branches/other/foo.txt")
     end
   end
 

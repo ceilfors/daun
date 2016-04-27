@@ -23,4 +23,6 @@ def create_test_repository(dir)
 
   workdir_repo.create_branch 'other'
   workdir_repo.push 'origin', ['refs/heads/master', 'refs/heads/other']
+
+  dir
 end
