@@ -21,5 +21,6 @@ def create_test_repository(dir)
   options[:update_ref] = 'HEAD'
   Rugged::Commit.create workdir_repo, options
 
-  workdir_repo.push 'origin', ['refs/heads/master']
+  workdir_repo.create_branch 'other'
+  workdir_repo.push 'origin', ['refs/heads/master', 'refs/heads/other']
 end
