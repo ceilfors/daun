@@ -24,9 +24,14 @@ describe 'gitgrok' do
       expect(File).to exist("#{@repository}/branches/other")
       expect(File).to exist("#{@repository}/branches/other/foo.txt")
     end
+
+    it 'checks out lightweight tags' do
+      expect(File).to exist("#{@repository}/tags/lightweight")
+      expect(File).to exist("#{@repository}/tags/lightweight/foo.txt")
+    end
   end
 
-  it 'checks out tags'
+  it 'checks out annotated tags'
   it 'deletes branch which have been deleted in remote'
   it 'deletes tag which have been deleted in remote'
   it 'adds new branch which have been added after the first checkout'

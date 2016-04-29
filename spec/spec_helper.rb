@@ -19,10 +19,12 @@ def create_test_repository(dir)
   options[:message] ||= "Making a commit via Rugged!"
   options[:parents] = workdir_repo.empty? ? [] : [ repo.head.target ].compact
   options[:update_ref] = 'HEAD'
-  Rugged::Commit.create workdir_repo, options
+  commit_hash = Rugged::Commit.create workdir_repo, options
+
+  workdir_repo.tags.create('lightweight', commit_hash)
 
   workdir_repo.create_branch 'other'
-  workdir_repo.push 'origin', ['refs/heads/master', 'refs/heads/other']
+  workdir_repo.push 'origin', ['refs/heads/master', 'refs/heads/other', 'refs/tags/lightweight']
 
   dir
 end
