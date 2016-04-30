@@ -8,23 +8,37 @@ def create_test_repository(dir)
   workdir_repo = Rugged::Repository.clone_at dir, workdir_path
   FileUtils.cp_r 'spec/repo/.', workdir_path
   index = workdir_repo.index
+  File.write("#{workdir_path}/foo.txt", 'branch/master')
   index.add_all
 
   options = {}
   options[:tree] = index.write_tree(workdir_repo)
   index.write
 
-  options[:author] = { :email => "testuser@github.com", :name => 'Test Author', :time => Time.now }
-  options[:committer] = { :email => "testuser@github.com", :name => 'Test Author', :time => Time.now }
-  options[:message] ||= "Making a commit via Rugged!"
-  options[:parents] = workdir_repo.empty? ? [] : [ repo.head.target ].compact
+  options[:message] ||= "message"
+  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
   options[:update_ref] = 'HEAD'
-  commit_hash = Rugged::Commit.create workdir_repo, options
+  Rugged::Commit.create workdir_repo, options
+  workdir_repo.push 'origin', ['refs/heads/master']
 
+  File.write("#{workdir_path}/foo.txt", 'tag/lightweight')
+  index.add_all
+  options[:tree] = index.write_tree(workdir_repo)
+  index.write
+  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
+  commit_hash = Rugged::Commit.create workdir_repo, options
   workdir_repo.tags.create('lightweight', commit_hash)
+  workdir_repo.push 'origin', ['refs/tags/lightweight']
 
   workdir_repo.create_branch 'other'
-  workdir_repo.push 'origin', ['refs/heads/master', 'refs/heads/other', 'refs/tags/lightweight']
+  workdir_repo.checkout 'other'
+  File.write("#{workdir_path}/foo.txt", 'branch/other')
+  index.add_all
+  options[:tree] = index.write_tree(workdir_repo)
+  index.write
+  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
+  Rugged::Commit.create workdir_repo, options
+  workdir_repo.push 'origin', ['refs/heads/other']
 
   dir
 end
