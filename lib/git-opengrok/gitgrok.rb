@@ -14,5 +14,10 @@ class GitGrok
       local_branch_name = branch[/origin\/(.*)/, 1]
       Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/branches/#{local_branch_name}", {:checkout_branch => local_branch_name})
     end
+
+    repo.tags.each_name do |tag|
+      tag_repo = Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/tags/#{tag}")
+      tag_repo.checkout "tags/#{tag}"
+    end
   end
 end
