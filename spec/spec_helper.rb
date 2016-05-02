@@ -16,7 +16,7 @@ def create_test_repository(dir)
   index.write
 
   options[:message] ||= "message"
-  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
+  options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
   options[:update_ref] = 'HEAD'
   Rugged::Commit.create workdir_repo, options
   workdir_repo.push 'origin', ['refs/heads/master']
@@ -25,10 +25,19 @@ def create_test_repository(dir)
   index.add_all
   options[:tree] = index.write_tree(workdir_repo)
   index.write
-  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
+  options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
   commit_hash = Rugged::Commit.create workdir_repo, options
   workdir_repo.tags.create('lightweight', commit_hash)
   workdir_repo.push 'origin', ['refs/tags/lightweight']
+
+  File.write("#{workdir_path}/foo.txt", 'tag/annotated')
+  index.add_all
+  options[:tree] = index.write_tree(workdir_repo)
+  index.write
+  options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
+  commit_hash = Rugged::Commit.create workdir_repo, options
+  workdir_repo.tags.create('annotated', commit_hash, annotation={:message => 'tag message'})
+  workdir_repo.push 'origin', ['refs/tags/annotated']
 
   workdir_repo.create_branch 'other'
   workdir_repo.checkout 'other'
@@ -36,7 +45,7 @@ def create_test_repository(dir)
   index.add_all
   options[:tree] = index.write_tree(workdir_repo)
   index.write
-  options[:parents] = workdir_repo.empty? ? [] : [ workdir_repo.head.target ].compact
+  options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
   Rugged::Commit.create workdir_repo, options
   workdir_repo.push 'origin', ['refs/heads/other']
 

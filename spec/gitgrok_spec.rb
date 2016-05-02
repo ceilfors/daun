@@ -32,13 +32,20 @@ describe 'gitgrok' do
       expect(File).to exist("#{@repository}/tags/lightweight/foo.txt")
       expect(File.read("#{@repository}/tags/lightweight/foo.txt")).to match "tag/lightweight"
     end
+
+    it 'checks out annotated tags' do
+      expect(File).to exist("#{@repository}/tags/annotated")
+      expect(File).to exist("#{@repository}/tags/annotated/foo.txt")
+      expect(File.read("#{@repository}/tags/annotated/foo.txt")).to match "tag/annotated"
+    end
   end
 
-  it 'checks out annotated tags'
   it 'deletes branch which have been deleted in remote'
   it 'deletes tag which have been deleted in remote'
   it 'adds new branch which have been added after the first checkout'
   it 'does not check out anything other than the branches and tags to avoid clutter'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
+  it 'filters branches check out according to the configuration'
+  it 'filters tags check out according to the configuration'
 end
