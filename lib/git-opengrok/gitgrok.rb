@@ -15,9 +15,9 @@ class GitGrok
       Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/branches/#{local_branch_name}", {:checkout_branch => local_branch_name})
     end
 
-    repo.tags.each_name do |tag|
-      tag_repo = Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/tags/#{tag}")
-      tag_repo.checkout "tags/#{tag}"
+    repo.tags.each do |tag|
+      tag_repo = Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/tags/#{tag.name}")
+      tag_repo.reset tag.target.oid, :hard # KLUDGE checkout tag.target.oid is not working as expected
     end
   end
 end

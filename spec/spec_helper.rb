@@ -15,7 +15,7 @@ def create_test_repository(dir)
   options[:tree] = index.write_tree(workdir_repo)
   index.write
 
-  options[:message] ||= "message"
+  options[:message] = "Add spec/repo/."
   options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
   options[:update_ref] = 'HEAD'
   Rugged::Commit.create workdir_repo, options
@@ -23,6 +23,7 @@ def create_test_repository(dir)
 
   File.write("#{workdir_path}/foo.txt", 'tag/lightweight')
   index.add_all
+  options[:message] = "Write tag/lightweight"
   options[:tree] = index.write_tree(workdir_repo)
   index.write
   options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
@@ -32,6 +33,7 @@ def create_test_repository(dir)
 
   File.write("#{workdir_path}/foo.txt", 'tag/annotated')
   index.add_all
+  options[:message] = "Write tag/annotated"
   options[:tree] = index.write_tree(workdir_repo)
   index.write
   options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
@@ -43,6 +45,7 @@ def create_test_repository(dir)
   workdir_repo.checkout 'other'
   File.write("#{workdir_path}/foo.txt", 'branch/other')
   index.add_all
+  options[:message] = "Write branch/other"
   options[:tree] = index.write_tree(workdir_repo)
   index.write
   options[:parents] = workdir_repo.empty? ? [] : [workdir_repo.head.target].compact
