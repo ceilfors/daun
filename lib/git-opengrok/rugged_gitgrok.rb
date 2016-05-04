@@ -1,6 +1,6 @@
 require 'rugged'
 
-class GitGrok
+class RuggedGitGrok
 
   def init(remote_url, destination)
     repo = Rugged::Repository.init_at(destination)

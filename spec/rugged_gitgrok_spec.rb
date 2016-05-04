@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'git-opengrok/gitgrok'
+require 'git-opengrok/rugged_gitgrok'
 
 describe 'gitgrok' do
   context 'when checking out test repository' do
@@ -7,8 +7,8 @@ describe 'gitgrok' do
       @tmpdir = Dir.mktmpdir
       bare_repository = create_test_repository File.join(@tmpdir, 'bare-repository')
       @repository = File.join(@tmpdir, 'repository')
-      GitGrok.new.init bare_repository, @repository
-      GitGrok.new.checkout @repository
+      RuggedGitGrok.new.init bare_repository, @repository
+      RuggedGitGrok.new.checkout @repository
     end
 
     after(:context) do
