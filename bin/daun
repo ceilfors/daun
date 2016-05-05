@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+require 'daun/cli'
+Daun::CLI.start

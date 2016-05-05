@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'git-opengrok'
+require 'daun'
 require 'rugged'
 
 def create_test_repository(dir)

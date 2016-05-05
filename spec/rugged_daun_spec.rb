@@ -1,14 +1,14 @@
 require 'spec_helper'
-require 'git-opengrok/rugged_gitgrok'
+require 'daun/rugged_daun'
 
-describe 'gitgrok' do
+describe 'daun' do
   context 'when checking out test repository' do
     before(:context) do
       @tmpdir = Dir.mktmpdir
       bare_repository = create_test_repository File.join(@tmpdir, 'bare-repository')
       @repository = File.join(@tmpdir, 'repository')
-      RuggedGitGrok.new.init bare_repository, @repository
-      RuggedGitGrok.new.checkout @repository
+      RuggedDaun.new.init bare_repository, @repository
+      RuggedDaun.new.checkout @repository
     end
 
     after(:context) do

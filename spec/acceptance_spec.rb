@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'git-opengrok/cli'
+require 'daun/cli'
 
-describe 'gitgrok cli' do
+describe 'daun cli' do
   it "has init and checkout commands" do
-    # KLUDGE: Somehow the output from help is not `gitgrok`
-    expect { GitOpenGrok::CLI.start ['help'] }.to output(/rspec checkout/).to_stdout
-    expect { GitOpenGrok::CLI.start ['help'] }.to output(/rspec init/).to_stdout
+    # KLUDGE: Somehow the output from help is not `daun`
+    expect { Daun::CLI.start ['help'] }.to output(/rspec checkout/).to_stdout
+    expect { Daun::CLI.start ['help'] }.to output(/rspec init/).to_stdout
   end
 
   it "checks out master branch successfully" do
@@ -16,8 +16,8 @@ describe 'gitgrok cli' do
 
       # Execute
       destination = File.join(dir, 'repository')
-      GitOpenGrok::CLI.start %W{ init #{bare_repository} #{destination}}
-      GitOpenGrok::CLI.start %W{ checkout --directory #{destination} }
+      Daun::CLI.start %W{ init #{bare_repository} #{destination}}
+      Daun::CLI.start %W{ checkout --directory #{destination} }
 
       # Verification
       expect(File).to exist("#{destination}/branches/master")

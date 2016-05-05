@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe GitOpenGrok do
+describe Daun do
   it 'has a version number' do
-    expect(GitOpenGrok::VERSION).not_to be nil
+    expect(Daun::VERSION).not_to be nil
   end
 end

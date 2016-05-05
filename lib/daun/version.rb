@@ -1,3 +1,3 @@
-module GitOpenGrok
+module Daun
   VERSION = "0.1.0"
 end

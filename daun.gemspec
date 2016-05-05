@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'git-opengrok/version'
+require 'daun/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "git-opengrok"
-  spec.version       = GitOpenGrok::VERSION
+  spec.name          = "daun"
+  spec.version       = Daun::VERSION
   spec.authors       = ["Wisen Tanasa"]
   spec.email         = ["wisen@ceilfors.com"]
 
