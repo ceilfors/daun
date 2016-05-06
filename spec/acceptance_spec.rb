@@ -1,27 +1,26 @@
 require 'spec_helper'
 require 'daun/cli'
+require 'fileutils'
+require 'tmpdir'
 
-describe 'daun cli' do
-  it "has init and checkout commands" do
-    # KLUDGE: Somehow the output from help is not `daun`
-    expect { Daun::CLI.start ['help'] }.to output(/rspec checkout/).to_stdout
-    expect { Daun::CLI.start ['help'] }.to output(/rspec init/).to_stdout
+describe 'acceptance' do
+
+  let(:tmpdir) { Dir.mktmpdir }
+  let(:bare_repository) { BareTestRepository.new(File.join(tmpdir, 'bare-repository')) }
+  let(:destination) { File.join(tmpdir, 'repository') }
+
+  after(:each) do
+    FileUtils.rm_rf(tmpdir)
   end
 
   it "checks out master branch successfully" do
-    Dir.mktmpdir do |dir|
-      # Preparation
-      bare_repository = File.join(dir, 'bare-repository')
-      create_test_repository bare_repository
+    bare_repository.write_file "branch/master"
 
-      # Execute
-      destination = File.join(dir, 'repository')
-      Daun::CLI.start %W{ init #{bare_repository} #{destination}}
-      Daun::CLI.start %W{ checkout --directory #{destination} }
+    Daun::CLI.start %W{ init #{bare_repository.path} #{destination}}
+    Daun::CLI.start %W{ checkout --directory #{destination} }
 
-      # Verification
-      expect(File).to exist("#{destination}/branches/master")
-      expect(File).to exist("#{destination}/branches/master/foo.txt")
-    end
+    expect(File).to exist("#{destination}/branches/master")
+    expect(File).to exist("#{destination}/branches/master/foo.txt")
+    expect(File.read("#{destination}/branches/master/foo.txt")).to match "branch/master"
   end
 end
