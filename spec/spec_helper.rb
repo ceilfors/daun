@@ -68,15 +68,24 @@ class BareTestRepository
     Rugged::Repository.init_at(dir, :bare)
     @workdir_path = File.join(dir, 'working_tree')
     @workdir_repo = Rugged::Repository.clone_at dir, @workdir_path
-    FileUtils.cp_r 'spec/repo/.', @workdir_path
-    commit "Add spec/repo/."
-    @workdir_repo.push 'origin', ['refs/heads/master']
+    commit "Initial commit."
   end
 
-  def write_file(content)
-    File.write("#{@workdir_path}/foo.txt", content)
-    commit "Write file #{content}"
-    @workdir_repo.push 'origin', ['refs/heads/master']
+  def write_file(file_name, content)
+    File.write("#{@workdir_path}/#{file_name}", content)
+    commit "Write #{file_name}"
+    push
+  end
+
+  def push
+    @workdir_repo.branches.each_name(:local) do |branch|
+      @workdir_repo.push 'origin', ["refs/heads/#{branch}"]
+    end
+  end
+
+  def create_branch(name)
+    @workdir_repo.create_branch name
+    @workdir_repo.checkout name
   end
 
   private
