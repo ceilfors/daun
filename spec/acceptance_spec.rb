@@ -3,7 +3,7 @@ require 'daun/cli'
 require 'fileutils'
 require 'tmpdir'
 
-describe 'acceptance' do
+describe 'daun' do
 
   let(:tmpdir) { Dir.mktmpdir }
   let(:bare_repository) { BareTestRepository.new(File.join(tmpdir, 'bare-repository')) }
@@ -34,5 +34,17 @@ describe 'acceptance' do
     expect(File).to exist("#{destination}/branches/other")
     expect(File).to exist("#{destination}/branches/other/foo.txt")
     expect(File.read("#{destination}/branches/other/foo.txt")).to match "branch/other"
+  end
+
+  it 'checks out lightweight tags' do
+    bare_repository.write_file "foo.txt", "tag/lightweight"
+    bare_repository.create_lightweight_tag 'lightweight'
+
+    Daun::CLI.start %W{ init #{bare_repository.path} #{destination}}
+    Daun::CLI.start %W{ checkout --directory #{destination} }
+
+    expect(File).to exist("#{destination}/tags/lightweight")
+    expect(File).to exist("#{destination}/tags/lightweight/foo.txt")
+    expect(File.read("#{destination}/tags/lightweight/foo.txt")).to match "tag/lightweight"
   end
 end

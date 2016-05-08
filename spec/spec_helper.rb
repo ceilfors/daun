@@ -81,11 +81,19 @@ class BareTestRepository
     @workdir_repo.branches.each_name(:local) do |branch|
       @workdir_repo.push 'origin', ["refs/heads/#{branch}"]
     end
+    @workdir_repo.tags.each_name do |tag|
+      @workdir_repo.push 'origin', ["refs/tags/#{tag}"]
+    end
   end
 
   def create_branch(name)
     @workdir_repo.create_branch name
     @workdir_repo.checkout name
+  end
+
+  def create_lightweight_tag(name)
+    @workdir_repo.tags.create(name, 'HEAD')
+    push
   end
 
   private
