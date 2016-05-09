@@ -96,6 +96,11 @@ class BareTestRepository
     push
   end
 
+  def create_annotated_tag(name)
+    @workdir_repo.tags.create(name, 'HEAD', annotation={:message => 'New annotated tag!'})
+    push
+  end
+
   private
 
   def commit(message)

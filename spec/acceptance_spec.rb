@@ -47,4 +47,16 @@ describe 'daun' do
     expect(File).to exist("#{destination}/tags/lightweight/foo.txt")
     expect(File.read("#{destination}/tags/lightweight/foo.txt")).to match "tag/lightweight"
   end
+
+  it 'checks out annotated tags' do
+    bare_repository.write_file "foo.txt", "tag/annotated"
+    bare_repository.create_annotated_tag 'annotated'
+
+    Daun::CLI.start %W{ init #{bare_repository.path} #{destination}}
+    Daun::CLI.start %W{ checkout --directory #{destination} }
+
+    expect(File).to exist("#{destination}/tags/annotated")
+    expect(File).to exist("#{destination}/tags/annotated/foo.txt")
+    expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
+  end
 end
