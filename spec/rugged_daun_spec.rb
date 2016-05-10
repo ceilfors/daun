@@ -1,51 +1,6 @@
 require 'spec_helper'
 require 'daun/rugged_daun'
 
-describe 'daun' do
-  context 'when checking out test repository' do
-    before(:context) do
-      @tmpdir = Dir.mktmpdir
-      bare_repository = create_test_repository File.join(@tmpdir, 'bare-repository')
-      @repository = File.join(@tmpdir, 'repository')
-      RuggedDaun.new.init bare_repository, @repository
-      RuggedDaun.new.checkout @repository
-    end
+describe 'rugged_daun' do
 
-    after(:context) do
-      FileUtils.rm_rf(@tmpdir)
-    end
-
-    it 'checks out master branch' do
-      expect(File).to exist("#{@repository}/branches/master")
-      expect(File).to exist("#{@repository}/branches/master/foo.txt")
-      expect(File.read("#{@repository}/branches/master/foo.txt")).to match "branch/master"
-    end
-
-    it 'checks out other branch' do
-      expect(File).to exist("#{@repository}/branches/other")
-      expect(File).to exist("#{@repository}/branches/other/foo.txt")
-      expect(File.read("#{@repository}/branches/other/foo.txt")).to match "branch/other"
-    end
-
-    it 'checks out lightweight tags' do
-      expect(File).to exist("#{@repository}/tags/lightweight")
-      expect(File).to exist("#{@repository}/tags/lightweight/foo.txt")
-      expect(File.read("#{@repository}/tags/lightweight/foo.txt")).to match "tag/lightweight"
-    end
-
-    it 'checks out annotated tags' do
-      expect(File).to exist("#{@repository}/tags/annotated")
-      expect(File).to exist("#{@repository}/tags/annotated/foo.txt")
-      expect(File.read("#{@repository}/tags/annotated/foo.txt")).to match "tag/annotated"
-    end
-  end
-
-  it 'deletes branch which have been deleted in remote'
-  it 'deletes tag which have been deleted in remote'
-  it 'adds new branch which have been added after the first checkout'
-  it 'does not check out anything other than the branches and tags to avoid clutter'
-  it 'does not check out branches when it is configured not do so'
-  it 'does not check out tags when it is configured not do so'
-  it 'filters branches check out according to the configuration'
-  it 'filters tags check out according to the configuration'
 end
