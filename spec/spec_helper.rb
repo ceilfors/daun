@@ -4,6 +4,10 @@ require 'rugged'
 
 class DaunCliDriver
 
+  def checkout remote_url, destination
+    Daun::CLI.start %W{ init #{remote_url} #{destination}}
+    Daun::CLI.start %W{ checkout --directory #{destination} }
+  end
 end
 
 class BareTestRepository
