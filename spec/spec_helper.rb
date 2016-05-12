@@ -8,6 +8,9 @@ class DaunCliDriver
     Daun::CLI.start %W{ init #{remote_url} #{destination}}
     Daun::CLI.start %W{ checkout --directory #{destination} }
   end
+
+  def update repository
+  end
 end
 
 class BareTestRepository
@@ -28,18 +31,17 @@ class BareTestRepository
     push
   end
 
-  def push
-    @workdir_repo.branches.each_name(:local) do |branch|
-      @workdir_repo.push 'origin', ["refs/heads/#{branch}"]
-    end
-    @workdir_repo.tags.each_name do |tag|
-      @workdir_repo.push 'origin', ["refs/tags/#{tag}"]
-    end
-  end
-
   def create_branch(name)
     @workdir_repo.create_branch name
     @workdir_repo.checkout name
+    push
+  end
+
+  def delete_branch(name)
+    @workdir_repo.checkout 'master'
+    @workdir_repo.branches.delete name
+    @workdir_repo.branches.delete "origin/#{name}"
+    @workdir_repo.remotes['origin'].push([":refs/heads/#{name}"])
   end
 
   def create_lightweight_tag(name)
@@ -66,4 +68,12 @@ class BareTestRepository
     Rugged::Commit.create @workdir_repo, options
   end
 
+  def push
+    @workdir_repo.branches.each_name(:local) do |branch|
+      @workdir_repo.push 'origin', ["refs/heads/#{branch}"]
+    end
+    @workdir_repo.tags.each_name do |tag|
+      @workdir_repo.push 'origin', ["refs/tags/#{tag}"]
+    end
+  end
 end

@@ -57,7 +57,19 @@ describe 'daun' do
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
   end
 
-  it 'deletes branch which have been deleted in remote'
+  it 'updates master branch with the latest change'
+
+  it 'deletes branch which have been deleted' do
+    pending("updates master branch")
+    bare_repository.create_branch 'other'
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.delete_branch 'other'
+    daun.update destination
+
+    expect(File).not_to exist("#{destination}/branches/other")
+  end
+
   it 'deletes tag which have been deleted in remote'
   it 'adds new branch which have been added after the first checkout'
   it 'does not check out anything other than the branches and tags to avoid clutter'
