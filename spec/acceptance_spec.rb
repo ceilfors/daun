@@ -24,6 +24,17 @@ describe 'daun' do
     expect(File.read("#{destination}/branches/master/foo.txt")).to match "branch/master"
   end
 
+  it 'updates master branch with the latest change' do
+    pending("impl")
+    bare_repository.write_file "foo.txt", "master"
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.write_file "foo.txt", "updated"
+    daun.update destination
+
+    expect(File.read("#{destination}/branches/master/foo.txt")).to match "updated"
+  end
+
   it 'checks out other branch successfully' do
     bare_repository.create_branch 'other'
     bare_repository.write_file "foo.txt", "branch/other"
@@ -56,8 +67,6 @@ describe 'daun' do
     expect(File).to exist("#{destination}/tags/annotated/foo.txt")
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
   end
-
-  it 'updates master branch with the latest change'
 
   it 'deletes branch which have been deleted' do
     pending("updates master branch")
