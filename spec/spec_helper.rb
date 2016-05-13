@@ -10,6 +10,7 @@ class DaunCliDriver
   end
 
   def update repository
+    Daun::CLI.start %W{ checkout --directory #{repository} }
   end
 end
 

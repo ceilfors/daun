@@ -25,7 +25,6 @@ describe 'daun' do
   end
 
   it 'updates master branch with the latest change' do
-    pending("impl")
     bare_repository.write_file "foo.txt", "master"
     daun.checkout bare_repository.path, destination
 
