@@ -68,7 +68,6 @@ describe 'daun' do
   end
 
   it 'deletes branch which have been deleted' do
-    pending("updates master branch")
     bare_repository.create_branch 'other'
     daun.checkout bare_repository.path, destination
 
