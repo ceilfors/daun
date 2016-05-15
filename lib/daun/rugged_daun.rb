@@ -3,37 +3,38 @@ require 'fileutils'
 
 class RuggedDaun
 
-  def init(remote_url, destination)
-    repo = Rugged::Repository.init_at(destination)
-    repo.remotes.create('origin', remote_url)
+  def initialize repository_path
+    @repository = Rugged::Repository.init_at(repository_path)
   end
 
-  def checkout(repository)
-    repo = Rugged::Repository.new(repository)
+  def init(remote_url)
+    @repository.remotes.create('origin', remote_url)
+  end
 
+  def checkout
     # Prune is not supported by rugged! Deleting all remote refs and re-fetch
-    repo.branches.each_name(:remote) do |branch|
-      repo.branches.delete branch
+    @repository.branches.each_name(:remote) do |branch|
+      @repository.branches.delete branch
     end
-    repo.remotes['origin'].fetch
+    @repository.remotes['origin'].fetch
 
     # Updates all branches
-    repo.branches.each_name(:remote) do |branch|
+    @repository.branches.each_name(:remote) do |branch|
       local_branch_name = branch[/origin\/(.*)/, 1]
-      checkout_target_directory = "#{repository}/branches/#{local_branch_name}"
+      checkout_target_directory = "#{@repository.workdir}/branches/#{local_branch_name}"
       FileUtils::mkdir_p checkout_target_directory
-      repo.checkout(branch, strategy: :force, target_directory: checkout_target_directory)
+      @repository.checkout(branch, strategy: :force, target_directory: checkout_target_directory)
     end
 
     # Deletes branches that are already deleted in remote
-    existing_branches(repository).each do |branch|
-      unless repo.branches.exists? "origin/#{branch}"
-        FileUtils.rm_rf File.join(repository, 'branches', branch)
+    existing_branches(@repository.workdir).each do |branch|
+      unless @repository.branches.exists? "origin/#{branch}"
+        FileUtils.rm_rf File.join(@repository.workdir, 'branches', branch)
       end
     end
 
-    repo.tags.each do |tag|
-      tag_repo = Rugged::Repository.clone_at(repo.remotes['origin'].url, "#{repository}/tags/#{tag.name}")
+    @repository.tags.each do |tag|
+      tag_repo = Rugged::Repository.clone_at(@repository.remotes['origin'].url, "#{@repository.workdir}/tags/#{tag.name}")
       tag_repo.reset tag.target.oid, :hard # KLUDGE checkout tag.target.oid is not working as expected
     end
   end
