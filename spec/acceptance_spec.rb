@@ -45,6 +45,18 @@ describe 'daun' do
     expect(File.read("#{destination}/branches/other/foo.txt")).to match "branch/other"
   end
 
+  it 'deletes branch which have been deleted' do
+    bare_repository.create_branch 'other'
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.delete_branch 'other'
+    daun.update destination
+
+    expect(File).not_to exist("#{destination}/branches/other")
+  end
+
+  it 'adds new branch which have been added after the first checkout'
+
   it 'checks out lightweight tags' do
     bare_repository.write_file "foo.txt", "tag/lightweight"
     bare_repository.create_lightweight_tag 'lightweight'
@@ -67,18 +79,7 @@ describe 'daun' do
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
   end
 
-  it 'deletes branch which have been deleted' do
-    bare_repository.create_branch 'other'
-    daun.checkout bare_repository.path, destination
-
-    bare_repository.delete_branch 'other'
-    daun.update destination
-
-    expect(File).not_to exist("#{destination}/branches/other")
-  end
-
   it 'deletes tag which have been deleted in remote'
-  it 'adds new branch which have been added after the first checkout'
   it 'does not check out anything other than the branches and tags to avoid clutter'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
