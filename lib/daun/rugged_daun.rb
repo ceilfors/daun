@@ -12,22 +12,19 @@ class RuggedDaun
   end
 
   def checkout
-    # Prune is not supported by rugged! Deleting all remote refs and re-fetch
-    @repository.branches.each_name(:remote) do |branch|
-      @repository.branches.delete branch
-    end
+    delete_all_remote_branches # Prune is not supported by rugged! Deleting all remote refs and re-fetch
     @repository.remotes['origin'].fetch
 
     # Updates all branches
     @repository.branches.each_name(:remote) do |branch|
       local_branch_name = branch[/origin\/(.*)/, 1]
-      checkout_target_directory = "#{@repository.workdir}/branches/#{local_branch_name}"
+      checkout_target_directory = File.join(@repository.workdir, "branches", local_branch_name)
       FileUtils::mkdir_p checkout_target_directory
       @repository.checkout(branch, strategy: :force, target_directory: checkout_target_directory)
     end
 
     # Deletes branches that are already deleted in remote
-    existing_branches(@repository.workdir).each do |branch|
+    existing_branches.each do |branch|
       unless @repository.branches.exists? "origin/#{branch}"
         FileUtils.rm_rf File.join(@repository.workdir, 'branches', branch)
       end
@@ -41,7 +38,13 @@ class RuggedDaun
 
   private
 
-  def existing_branches repository
-    Dir.entries(File.join(repository, 'branches')).select { |branch| branch != "." && branch != ".." }
+  def existing_branches
+    Dir.entries(File.join(@repository.workdir, 'branches')).select { |branch| branch != "." && branch != ".." }
+  end
+
+  def delete_all_remote_branches
+    @repository.branches.each_name(:remote) do |branch|
+      @repository.branches.delete branch
+    end
   end
 end
