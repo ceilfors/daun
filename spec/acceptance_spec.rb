@@ -55,7 +55,14 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/branches/other")
   end
 
-  it 'adds new branch which have been added after the first checkout'
+  it 'adds new branch which have been added after the first checkout' do
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.create_branch 'other'
+    daun.update destination
+
+    expect(File).to exist("#{destination}/branches/other")
+  end
 
   it 'checks out lightweight tags' do
     bare_repository.write_file "foo.txt", "tag/lightweight"

@@ -24,6 +24,7 @@ class BareTestRepository
     @workdir_path = File.join(dir, 'working_tree')
     @workdir_repo = Rugged::Repository.clone_at dir, @workdir_path
     commit "Initial commit."
+    push
   end
 
   def write_file(file_name, content)
