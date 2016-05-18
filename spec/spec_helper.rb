@@ -46,6 +46,11 @@ class BareTestRepository
     @workdir_repo.remotes['origin'].push([":refs/heads/#{name}"])
   end
 
+  def delete_lightweight_tag(name)
+    @workdir_repo.tags.delete(name)
+    @workdir_repo.remotes['origin'].push([":refs/tags/#{name}"])
+  end
+
   def create_lightweight_tag(name)
     @workdir_repo.tags.create(name, 'HEAD')
     push
