@@ -52,6 +52,9 @@ class BareTestRepository
   end
 
   def create_lightweight_tag(name)
+    if @workdir_repo.tags[name]
+      delete_lightweight_tag name
+    end
     @workdir_repo.tags.create(name, 'HEAD')
     push
   end

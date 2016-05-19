@@ -87,14 +87,13 @@ describe 'daun' do
   end
 
   it 'updates tags with the latest change' do
-    pending('impl')
     bare_repository.write_file "foo.txt", "original"
     bare_repository.create_lightweight_tag 'lightweight'
     daun.checkout bare_repository.path, destination
 
     bare_repository.write_file "foo.txt", "updated"
-    bare_repository.delete_lightweight_tag 'lightweight'
     bare_repository.create_lightweight_tag 'lightweight'
+    daun.update destination
 
     expect(File).to exist("#{destination}/tags/lightweight")
     expect(File).to exist("#{destination}/tags/lightweight/foo.txt")

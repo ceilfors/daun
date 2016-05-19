@@ -13,7 +13,9 @@ class RuggedDaun
 
   def checkout
     delete_all_remote_branches # Prune is not supported by rugged! Deleting all remote refs and re-fetch
+    delete_all_tags
     @repository.remotes['origin'].fetch
+    @repository.remotes['origin'].fetch 'refs/tags/*:refs/tags/*'
 
     # Updates all branches
     @repository.branches.each_name(:remote) do |branch|
@@ -31,8 +33,13 @@ class RuggedDaun
     end
 
     @repository.tags.each do |tag|
-      tag_repo = Rugged::Repository.clone_at(@repository.remotes['origin'].url, "#{@repository.workdir}/tags/#{tag.name}")
-      tag_repo.reset tag.target.oid, :hard # KLUDGE checkout tag.target.oid is not working as expected
+      checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
+      if File.exists? checkout_target_directory
+        # checkout --force is somehow not working to update the tag
+        FileUtils.rm_rf checkout_target_directory
+      end
+      FileUtils::mkdir_p checkout_target_directory
+      @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
     end
   end
 
@@ -45,6 +52,12 @@ class RuggedDaun
   def delete_all_remote_branches
     @repository.branches.each_name(:remote) do |branch|
       @repository.branches.delete branch
+    end
+  end
+
+  def delete_all_tags
+    @repository.tags.each_name do |tag|
+      @repository.tags.delete tag
     end
   end
 end
