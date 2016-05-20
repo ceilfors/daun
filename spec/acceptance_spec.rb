@@ -14,7 +14,7 @@ describe 'daun' do
     FileUtils.rm_rf(tmpdir)
   end
 
-  it "checks out master branch successfully" do
+  it "checks out master branch" do
     bare_repository.write_file "foo.txt", "branch/master"
 
     daun.checkout bare_repository.path, destination
@@ -34,7 +34,7 @@ describe 'daun' do
     expect(File.read("#{destination}/branches/master/foo.txt")).to match "updated"
   end
 
-  it 'checks out other branch successfully' do
+  it 'checks out other branch' do
     bare_repository.create_branch 'other'
     bare_repository.write_file "foo.txt", "branch/other"
 
