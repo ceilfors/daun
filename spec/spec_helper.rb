@@ -46,20 +46,23 @@ class BareTestRepository
     @workdir_repo.remotes['origin'].push([":refs/heads/#{name}"])
   end
 
-  def delete_lightweight_tag(name)
+  def delete_tag(name)
     @workdir_repo.tags.delete(name)
     @workdir_repo.remotes['origin'].push([":refs/tags/#{name}"])
   end
 
   def create_lightweight_tag(name)
     if @workdir_repo.tags[name]
-      delete_lightweight_tag name
+      delete_tag name
     end
     @workdir_repo.tags.create(name, 'HEAD')
     push
   end
 
   def create_annotated_tag(name)
+    if @workdir_repo.tags[name]
+      delete_tag name
+    end
     @workdir_repo.tags.create(name, 'HEAD', annotation={:message => 'New annotated tag!'})
     push
   end

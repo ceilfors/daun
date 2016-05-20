@@ -86,7 +86,7 @@ describe 'daun' do
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
   end
 
-  it 'updates tags with the latest change' do
+  it 'updates lightweight tags with the latest change' do
     bare_repository.write_file "foo.txt", "original"
     bare_repository.create_lightweight_tag 'lightweight'
     daun.checkout bare_repository.path, destination
@@ -100,12 +100,26 @@ describe 'daun' do
     expect(File.read("#{destination}/tags/lightweight/foo.txt")).to match "updated"
   end
 
+  it 'updates annotated tags with the latest change' do
+    bare_repository.write_file "foo.txt", "original"
+    bare_repository.create_annotated_tag 'annotated'
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.write_file "foo.txt", "updated"
+    bare_repository.create_annotated_tag'annotated'
+    daun.update destination
+
+    expect(File).to exist("#{destination}/tags/annotated")
+    expect(File).to exist("#{destination}/tags/annotated/foo.txt")
+    expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "updated"
+  end
+
   it 'deletes lightweight tag which have been deleted in remote' do
     pending('updates tag')
     bare_repository.create_lightweight_tag 'lightweight'
     daun.checkout bare_repository.path, destination
 
-    bare_repository.delete_lightweight_tag 'lightweight'
+    bare_repository.delete_tag 'lightweight'
     daun.update destination
 
     expect(File).not_to exist("#{destination}/tags/lightweight")

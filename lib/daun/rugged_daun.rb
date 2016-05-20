@@ -34,6 +34,7 @@ class RuggedDaun
 
     @repository.tags.each do |tag|
       checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
+      # TODO Check if git reference difference before deleting
       if File.exists? checkout_target_directory
         # checkout --force is somehow not working to update the tag
         FileUtils.rm_rf checkout_target_directory
