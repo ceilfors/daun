@@ -115,7 +115,6 @@ describe 'daun' do
   end
 
   it 'deletes lightweight tag which have been deleted in remote' do
-    pending('updates tag')
     bare_repository.create_lightweight_tag 'lightweight'
     daun.checkout bare_repository.path, destination
 

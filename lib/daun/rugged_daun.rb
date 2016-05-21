@@ -42,12 +42,27 @@ class RuggedDaun
       FileUtils::mkdir_p checkout_target_directory
       @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
     end
+
+    existing_tags.each do |tag|
+      unless @repository.tags[tag]
+        FileUtils.rm_rf File.join(@repository.workdir, 'tags', tag)
+      end
+    end
   end
 
   private
 
   def existing_branches
     Dir.entries(File.join(@repository.workdir, 'branches')).select { |branch| branch != "." && branch != ".." }
+  end
+
+  def existing_tags
+    tags_dir = File.join(@repository.workdir, 'tags')
+    if File.exists? tags_dir
+      Dir.entries(tags_dir).select { |tag| tag != "." && tag != ".." }
+    else
+      []
+    end
   end
 
   def delete_all_remote_branches
