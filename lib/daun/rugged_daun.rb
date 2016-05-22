@@ -12,10 +12,7 @@ class RuggedDaun
   end
 
   def checkout
-    delete_all_remote_branches # Prune is not supported by rugged! Deleting all remote refs and re-fetch
-    delete_all_tags
-    @repository.remotes['origin'].fetch
-    @repository.remotes['origin'].fetch 'refs/tags/*:refs/tags/*'
+    fetch_result = fetch
 
     # Updates all branches
     @repository.branches.each_name(:remote) do |branch|
@@ -25,11 +22,8 @@ class RuggedDaun
       @repository.checkout(branch, strategy: :force, target_directory: checkout_target_directory)
     end
 
-    # Deletes branches that are already deleted in remote
-    existing_branches.each do |branch|
-      unless @repository.branches.exists? "origin/#{branch}"
-        FileUtils.rm_rf File.join(@repository.workdir, 'branches', branch)
-      end
+    fetch_result.deleted_branches.each do |branch|
+      FileUtils.rm_rf File.join(@repository.workdir, 'branches', branch)
     end
 
     @repository.tags.each do |tag|
@@ -43,26 +37,39 @@ class RuggedDaun
       @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
     end
 
-    existing_tags.each do |tag|
-      unless @repository.tags[tag]
-        FileUtils.rm_rf File.join(@repository.workdir, 'tags', tag)
-      end
+    fetch_result.deleted_tags.each do |tag|
+      FileUtils.rm_rf File.join(@repository.workdir, 'tags', tag)
     end
   end
 
   private
 
-  def existing_branches
-    Dir.entries(File.join(@repository.workdir, 'branches')).select { |branch| branch != "." && branch != ".." }
+  def fetch
+    before_fetch_branches = @repository.branches.each_name.to_a.collect { |branch| branch[/origin\/(.*)/, 1]}
+    delete_all_remote_branches # Prune is not supported by rugged! Deleting all remote refs and re-fetch
+    before_fetch_tags = @repository.tags.each_name.to_a
+    delete_all_tags
+
+    fetch_result = FetchResult.new
+    @repository.remotes['origin'].fetch
+    after_fetch_branches = @repository.branches.each_name.to_a.collect { |branch| branch[/origin\/(.*)/, 1]}
+    after_fetch_tags = @repository.tags.each_name.to_a
+
+    fetch_result.new_branches = after_fetch_branches - before_fetch_branches
+    fetch_result.deleted_branches = before_fetch_branches - after_fetch_branches
+    fetch_result.existing_branches = before_fetch_branches - fetch_result.new_branches
+
+    fetch_result.new_tags = after_fetch_tags - before_fetch_tags
+    fetch_result.deleted_tags = before_fetch_tags - after_fetch_tags
+    fetch_result.existing_tags = before_fetch_tags - fetch_result.new_tags
+
+    fetch_result
   end
 
-  def existing_tags
-    tags_dir = File.join(@repository.workdir, 'tags')
-    if File.exists? tags_dir
-      Dir.entries(tags_dir).select { |tag| tag != "." && tag != ".." }
-    else
-      []
-    end
+  class FetchResult
+
+    attr_accessor :new_branches, :deleted_branches, :existing_branches,
+                  :new_tags, :deleted_tags, :existing_tags
   end
 
   def delete_all_remote_branches
