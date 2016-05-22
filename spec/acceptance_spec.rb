@@ -124,7 +124,15 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/tags/lightweight")
   end
 
-  it 'deletes annotated tag which have been deleted in remote'
+  it 'deletes annotated tag which have been deleted in remote' do
+    bare_repository.create_annotated_tag 'annotated'
+    daun.checkout bare_repository.path, destination
+
+    bare_repository.delete_tag 'annotated'
+    daun.update destination
+
+    expect(File).not_to exist("#{destination}/tags/annotated")
+  end
 
   it 'does not check out anything other than the branches and tags to avoid clutter'
   it 'does not check out branches when it is configured not do so'
