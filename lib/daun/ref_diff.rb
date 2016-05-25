@@ -8,6 +8,7 @@ class RefDiff
   end
 
   def added
-    @after
+    added_keys = @after.keys - @before.keys
+    added_keys.collect { |k| k.to_s }
   end
 end
