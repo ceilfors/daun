@@ -22,18 +22,38 @@ describe 'ref_diff' do
           :expected => ['refs/remotes/origin/bug', 'refs/remotes/origin/feature']
       }
   ].each do |example|
-    it 'detects new remotes' do
+    it 'detects new references' do
       ref_diff = RefDiff.new(example[:before], example[:after])
 
       expect(ref_diff.added).to match_array(example[:expected])
     end
   end
 
-  it 'detects new tags' do
-    ref_diff = RefDiff.new({}, {:'refs/tags/1.0' => '1'})
+  [
+      {
+          :before => {},
+          :after => {:'refs/remotes/origin/master' => '1'},
+          :type => :tags,
+          :expected => []
+      }, {
+          :before => {},
+          :after => {:'refs/tags/1.0' => '1', :'refs/remotes/origin/master' => 1},
+          :type => :tags,
+          :expected => ['refs/tags/1.0']
+      }, {
+          :before => {},
+          :after => {:'refs/tags/1.0' => '1', :'refs/remotes/origin/master' => 1},
+          :type => :remotes,
+          :expected => ['refs/remotes/origin/master']
+      }
+  ].each do |example|
+    it 'filters references by type' do
+      ref_diff = RefDiff.new(example[:before], example[:after])
 
-    expect(ref_diff.added).to include('refs/tags/1.0')
+      expect(ref_diff.added example[:type]).to match_array(example[:expected])
+    end
   end
+
 
   it 'detects updated remotes' do
     pending
