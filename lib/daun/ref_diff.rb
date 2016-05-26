@@ -8,8 +8,7 @@ class RefDiff
   end
 
   def added(type = nil)
-    added_keys = @after.keys - @before.keys
-    added_keys = added_keys.collect { |k| k.to_s }
-    type ? added_keys.select { |k| k.start_with? "refs/#{type.to_s}"} : added_keys
+    keys = (@after.keys - @before.keys).collect { |k| k.to_s }
+    type ? keys.select { |k| k.start_with? "refs/#{type.to_s}"} : keys
   end
 end

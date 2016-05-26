@@ -54,7 +54,6 @@ describe 'ref_diff' do
     end
   end
 
-
   it 'detects updated remotes' do
     pending
     ref_diff = RefDiff.new({:'refs/remotes/origin/master' => '1'},
