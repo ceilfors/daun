@@ -54,11 +54,10 @@ describe 'ref_diff' do
     end
   end
 
-  it 'detects updated remotes' do
-    pending
+  it 'detects updated references' do
     ref_diff = RefDiff.new({:'refs/remotes/origin/master' => '1'},
                            {:'refs/remotes/origin/master' => '2'})
 
-    expect(ref_diff.updated).to include('refs/remotes/origin/master')
+    expect(ref_diff.updated).to match_array(['refs/remotes/origin/master'])
   end
 end
