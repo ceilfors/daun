@@ -1,4 +1,4 @@
-class RefDiff
+class RefsDiff
 
   attr_accessor :added_remotes
 

@@ -1,7 +1,7 @@
 require 'rspec'
-require 'daun/ref_diff'
+require 'daun/refs_diff'
 
-describe 'ref_diff' do
+describe 'refs_diff' do
 
   [
       {
@@ -23,7 +23,7 @@ describe 'ref_diff' do
       }
   ].each do |example|
     it 'detects new references' do
-      ref_diff = RefDiff.new(example[:before], example[:after])
+      ref_diff = RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.added).to match_array(example[:expected])
     end
@@ -48,15 +48,15 @@ describe 'ref_diff' do
       }
   ].each do |example|
     it 'filters references by type' do
-      ref_diff = RefDiff.new(example[:before], example[:after])
+      ref_diff = RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.added example[:type]).to match_array(example[:expected])
     end
   end
 
   it 'detects updated references' do
-    ref_diff = RefDiff.new({:'refs/remotes/origin/master' => '1'},
-                           {:'refs/remotes/origin/master' => '2'})
+    ref_diff = RefsDiff.new({:'refs/remotes/origin/master' => '1'},
+                            {:'refs/remotes/origin/master' => '2'})
 
     expect(ref_diff.updated).to match_array(['refs/remotes/origin/master'])
   end
