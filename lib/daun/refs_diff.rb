@@ -14,8 +14,8 @@ class RefsDiff
 
   def updated
     (@after.keys + @before.keys)
-        .group_by { |e| e }
-        .select { |k, v| v.size > 1 }
-        .collect { |k, v| v[0].to_s}
+        .group_by { |k| k }
+        .select { |k, k_group| k_group.size > 1 && @before[k] != @after[k] }
+        .collect { |k, k_group| k.to_s }
   end
 end
