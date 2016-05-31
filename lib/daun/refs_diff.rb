@@ -19,4 +19,9 @@ class RefsDiff
         .collect { |k, k_group| k.to_s }
     type ? keys.select { |k| k.start_with? "refs/#{type}" } : keys
   end
+
+  def deleted(type = nil)
+    keys = (@before.keys - @after.keys).collect { |k| k.to_s }
+    type ? keys.select { |k| k.start_with? "refs/#{type}" } : keys
+  end
 end
