@@ -129,4 +129,24 @@ describe 'refs_diff' do
     end
   end
 
+
+  [
+      {
+          :before => {:'refs/tags/1.0' => '1', :'refs/remotes/origin/master' => '1'},
+          :after => {},
+          :type => :tags,
+          :expected => ['refs/tags/1.0']
+      }, {
+          :before => {:'refs/remotes/origin/master' => '1', :'refs/remotes/origin/feature' => '1', :'refs/remotes/origin/bug' => '1'},
+          :after => {:'refs/remotes/origin/master' => '1'},
+          :type => :remotes,
+          :expected => ['refs/remotes/origin/bug', 'refs/remotes/origin/feature']
+      }
+  ].each do |example|
+    it 'filters deleted references by type' do
+      ref_diff = RefsDiff.new(example[:before], example[:after])
+
+      expect(ref_diff.deleted example[:type]).to match_array(example[:expected])
+    end
+  end
 end
