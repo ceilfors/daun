@@ -31,3 +31,10 @@ class RefsDiff
     type != nil ? keys.select { |k| k.start_with? "refs/#{type}" } : keys
   end
 end
+
+class String
+
+  def to_local_branch
+    self[/refs\/remotes\/origin\/(.*)/, 1]
+  end
+end

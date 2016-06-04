@@ -17,16 +17,15 @@ class RuggedDaun
     refs_diff = get_refs_diff
 
     refs_diff.added(:remotes).each do |refs|
-      checkout_remote_branch refs
+      checkout_remote_branch refs.to_local_branch
     end
 
     refs_diff.updated(:remotes).each do |refs|
-      checkout_remote_branch refs
+      checkout_remote_branch refs.to_local_branch
     end
 
     refs_diff.deleted(:remotes).each do |refs|
-      local_branch_name = refs[/refs\/remotes\/origin\/(.*)/, 1]
-      FileUtils.rm_rf File.join(@repository.workdir, 'branches', local_branch_name)
+      FileUtils.rm_rf File.join(@repository.workdir, 'branches', refs.to_local_branch)
     end
 
     refs_diff.added(:tags).each do |refs|
@@ -67,12 +66,10 @@ class RuggedDaun
     RefsDiff.new(before_fetch, after_fetch)
   end
 
-  def checkout_remote_branch refs
-    branch = @repository.branches[refs[/refs\/remotes\/(.*)/, 1]].name
-    local_branch_name = branch[/origin\/(.*)/, 1]
-    checkout_target_directory = File.join(@repository.workdir, "branches", local_branch_name)
+  def checkout_remote_branch branch
+    checkout_target_directory = File.join(@repository.workdir, "branches", branch)
     FileUtils::mkdir_p checkout_target_directory
-    @repository.checkout(branch, strategy: :force, target_directory: checkout_target_directory)
+    @repository.checkout("origin/#{branch}", strategy: :force, target_directory: checkout_target_directory)
   end
 
   def delete_all_remote_branches
