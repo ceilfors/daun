@@ -13,14 +13,9 @@ class RuggedDaun
   end
 
   def checkout
-    # fetch_result = fetch
     refs_diff = get_refs_diff
 
-    refs_diff.added(:remotes).each do |refs|
-      checkout_remote_branch refs.to_local_branch
-    end
-
-    refs_diff.updated(:remotes).each do |refs|
+    (refs_diff.added(:remotes) + refs_diff.updated(:remotes)).each do |refs|
       checkout_remote_branch refs.to_local_branch
     end
 
