@@ -24,14 +24,14 @@ class RuggedDaun
     end
 
     refs_diff.added(:tags).each do |refs|
-      tag = @repository.tags[refs[/refs\/tags\/(.*)/, 1]]
+      tag = @repository.tags[refs.to_tag]
       checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
       FileUtils::mkdir_p checkout_target_directory
       @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
     end
 
     refs_diff.updated(:tags).each do |refs|
-      tag = @repository.tags[refs[/refs\/tags\/(.*)/, 1]]
+      tag = @repository.tags[refs.to_tag]
       checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
       if File.exists? checkout_target_directory
         # checkout --force is somehow not working to update the tag
@@ -42,7 +42,7 @@ class RuggedDaun
     end
 
     refs_diff.deleted(:tags).each do |refs|
-      tag_name = refs[/refs\/tags\/(.*)/, 1]
+      tag_name = refs.to_tag
       FileUtils.rm_rf File.join(@repository.workdir, 'tags', tag_name)
     end
   end
@@ -77,5 +77,16 @@ class RuggedDaun
     @repository.tags.each_name do |tag|
       @repository.tags.delete tag
     end
+  end
+end
+
+class String
+
+  def to_local_branch
+    self[/refs\/remotes\/origin\/(.*)/, 1]
+  end
+
+  def to_tag
+    self[/refs\/tags\/(.*)/, 1]
   end
 end
