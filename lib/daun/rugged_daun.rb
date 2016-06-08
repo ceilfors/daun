@@ -24,26 +24,15 @@ class RuggedDaun
     end
 
     refs_diff.added(:tags).each do |refs|
-      tag = @repository.tags[refs.to_tag]
-      checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
-      FileUtils::mkdir_p checkout_target_directory
-      @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
+      checkout_tag refs.to_tag
     end
 
     refs_diff.updated(:tags).each do |refs|
-      tag = @repository.tags[refs.to_tag]
-      checkout_target_directory = File.join(@repository.workdir, "tags", tag.name)
-      if File.exists? checkout_target_directory
-        # checkout --force is somehow not working to update the tag
-        FileUtils.rm_rf checkout_target_directory
-      end
-      FileUtils::mkdir_p checkout_target_directory
-      @repository.checkout(tag.target.oid, strategy: :force, target_directory: checkout_target_directory)
+      checkout_tag refs.to_tag, true
     end
 
     refs_diff.deleted(:tags).each do |refs|
-      tag_name = refs.to_tag
-      FileUtils.rm_rf File.join(@repository.workdir, 'tags', tag_name)
+      FileUtils.rm_rf File.join(@repository.workdir, 'tags', refs.to_tag)
     end
   end
 
@@ -65,6 +54,16 @@ class RuggedDaun
     checkout_target_directory = File.join(@repository.workdir, "branches", branch)
     FileUtils::mkdir_p checkout_target_directory
     @repository.checkout("origin/#{branch}", strategy: :force, target_directory: checkout_target_directory)
+  end
+
+  def checkout_tag tag, force = false
+    checkout_target_directory = File.join(@repository.workdir, "tags", tag)
+    if force and File.exists? checkout_target_directory
+      # checkout --force is somehow not working to update the tag
+      FileUtils.rm_rf checkout_target_directory
+    end
+    FileUtils::mkdir_p checkout_target_directory
+    @repository.checkout(@repository.tags[tag].target.oid, strategy: :force, target_directory: checkout_target_directory)
   end
 
   def delete_all_remote_branches
