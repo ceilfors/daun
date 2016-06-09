@@ -20,7 +20,7 @@ class RuggedDaun
     end
 
     refs_diff.deleted(:remotes).each do |refs|
-      FileUtils.rm_rf File.join(@repository.workdir, 'branches', refs.to_local_branch)
+      FileUtils.rm_rf get_checkout_directory refs
     end
 
     refs_diff.added(:tags).each do |refs|
@@ -32,7 +32,7 @@ class RuggedDaun
     end
 
     refs_diff.deleted(:tags).each do |refs|
-      FileUtils.rm_rf File.join(@repository.workdir, 'tags', refs.to_tag)
+      FileUtils.rm_rf get_checkout_directory refs
     end
   end
 
@@ -75,6 +75,16 @@ class RuggedDaun
   def delete_all_tags
     @repository.tags.each_name do |tag|
       @repository.tags.delete tag
+    end
+  end
+
+  def get_checkout_directory refs
+    if refs.start_with? 'refs/remotes'
+      File.join(@repository.workdir, "branches", refs.to_local_branch)
+    elsif refs.start_with? 'refs/tags'
+      File.join(@repository.workdir, "tags", refs.to_tag)
+    else
+      raise "#{refs} is unsupported"
     end
   end
 end
