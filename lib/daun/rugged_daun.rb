@@ -16,7 +16,7 @@ class RuggedDaun
     refs_diff = get_refs_diff
 
     (refs_diff.added(:remotes) + refs_diff.updated(:remotes)).each do |refs|
-      checkout_remote_branch refs.to_local_branch
+      checkout_remote_branch refs.to_local_branch, get_checkout_directory(refs)
     end
 
     refs_diff.deleted(:remotes).each do |refs|
@@ -24,11 +24,11 @@ class RuggedDaun
     end
 
     refs_diff.added(:tags).each do |refs|
-      checkout_tag refs.to_tag
+      checkout_tag refs.to_tag, get_checkout_directory(refs)
     end
 
     refs_diff.updated(:tags).each do |refs|
-      checkout_tag refs.to_tag, true
+      checkout_tag(refs.to_tag, get_checkout_directory(refs), true)
     end
 
     refs_diff.deleted(:tags).each do |refs|
@@ -50,20 +50,18 @@ class RuggedDaun
     RefsDiff.new(before_fetch, after_fetch)
   end
 
-  def checkout_remote_branch branch
-    checkout_target_directory = File.join(@repository.workdir, "branches", branch)
-    FileUtils::mkdir_p checkout_target_directory
-    @repository.checkout("origin/#{branch}", strategy: :force, target_directory: checkout_target_directory)
+  def checkout_remote_branch branch, target_dir
+    FileUtils::mkdir_p target_dir
+    @repository.checkout("origin/#{branch}", strategy: :force, target_directory: target_dir)
   end
 
-  def checkout_tag tag, force = false
-    checkout_target_directory = File.join(@repository.workdir, "tags", tag)
-    if force and File.exists? checkout_target_directory
+  def checkout_tag tag, target_dir, force = false
+    if force and File.exists? target_dir
       # checkout --force is somehow not working to update the tag
-      FileUtils.rm_rf checkout_target_directory
+      FileUtils.rm_rf target_dir
     end
-    FileUtils::mkdir_p checkout_target_directory
-    @repository.checkout(@repository.tags[tag].target.oid, strategy: :force, target_directory: checkout_target_directory)
+    FileUtils::mkdir_p target_dir
+    @repository.checkout(@repository.tags[tag].target.oid, strategy: :force, target_directory: target_dir)
   end
 
   def delete_all_remote_branches
