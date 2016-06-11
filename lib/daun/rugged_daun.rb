@@ -28,7 +28,7 @@ class RuggedDaun
     end
 
     refs_diff.updated(:tags).each do |refs|
-      checkout_tag(refs.to_tag, get_checkout_directory(refs), true)
+      checkout_tag(refs.to_tag, get_checkout_directory(refs), :force => true)
     end
 
     refs_diff.deleted(:tags).each do |refs|
@@ -55,8 +55,8 @@ class RuggedDaun
     @repository.checkout("origin/#{branch}", strategy: :force, target_directory: target_dir)
   end
 
-  def checkout_tag tag, target_dir, force = false
-    if force and File.exists? target_dir
+  def checkout_tag(tag, target_dir, options = {:force => false})
+    if options[:force] and File.exists? target_dir
       # checkout --force is somehow not working to update the tag
       FileUtils.rm_rf target_dir
     end
