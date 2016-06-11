@@ -106,7 +106,7 @@ describe 'daun' do
     daun.checkout bare_repository.path, destination
 
     bare_repository.write_file "foo.txt", "updated"
-    bare_repository.create_annotated_tag'annotated'
+    bare_repository.create_annotated_tag 'annotated'
     daun.update destination
 
     expect(File).to exist("#{destination}/tags/annotated")
@@ -134,9 +134,26 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/tags/annotated")
   end
 
+  it 'filters branches check out according to the configuration' do
+    bare_repository.create_branch 'feature/foo'
+    bare_repository.create_branch 'feature/bar'
+    bare_repository.create_branch 'bugfix/boo'
+
+    daun.config = {
+        'branch.pattern' => 'feature/.*'
+    }
+    daun.checkout bare_repository.path, destination
+
+    expect(File).to exist("#{destination}/branches/feature/foo")
+    expect(File).to exist("#{destination}/branches/feature/bar")
+
+    pending 'implementation'
+    expect(File).not_to exist("#{destination}/branches/master")
+    expect(File).not_to exist("#{destination}/branches/bugfix/boo")
+  end
+
   it 'does not check out anything other than the branches and tags to avoid clutter'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
-  it 'filters branches check out according to the configuration'
   it 'filters tags check out according to the configuration'
 end

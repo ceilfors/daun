@@ -12,6 +12,10 @@ class DaunCliDriver
   def update repository
     Daun::CLI.start %W{ checkout --directory #{repository} }
   end
+
+  def config= config
+
+  end
 end
 
 class BareTestRepository
