@@ -81,6 +81,7 @@ class BareTestRepository
     options = {}
     options[:message] = message
     options[:committer] = author
+    options[:author] = author
     options[:tree] = index.write_tree(@workdir_repo)
     options[:parents] = @workdir_repo.empty? ? [] : [@workdir_repo.head.target].compact
     options[:update_ref] = 'HEAD'
