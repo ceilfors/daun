@@ -74,10 +74,13 @@ class BareTestRepository
   private
 
   def commit(message)
+    author = {:email => 'daun@github.com', :time => Time.now, :name => 'daun-tester'}
+
     index = @workdir_repo.index
     index.add_all
     options = {}
     options[:message] = message
+    options[:committer] = author
     options[:tree] = index.write_tree(@workdir_repo)
     options[:parents] = @workdir_repo.empty? ? [] : [@workdir_repo.head.target].compact
     options[:update_ref] = 'HEAD'
