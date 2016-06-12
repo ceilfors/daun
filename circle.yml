@@ -2,3 +2,7 @@ dependencies:
   pre:
     - rvm install rubygems 2.4.8 --force
     - gem install bundler -v 1.11.2
+
+test:
+  override:
+    - RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
