@@ -1,0 +1,4 @@
+dependencies:
+  pre:
+    - rvm install rubygems 2.4.8 --force
+    - gem install bundler -v 1.11.2
