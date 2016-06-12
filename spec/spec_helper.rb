@@ -22,6 +22,8 @@ class BareTestRepository
 
   attr_accessor :path
 
+  AUTHOR = {:email => 'daun@github.com', :time => Time.now, :name => 'daun-tester'}
+
   def initialize(dir)
     @path = dir
     Rugged::Repository.init_at(dir, :bare)
@@ -67,7 +69,7 @@ class BareTestRepository
     if @workdir_repo.tags[name]
       delete_tag name
     end
-    @workdir_repo.tags.create(name, 'HEAD', annotation={:message => 'New annotated tag!'})
+    @workdir_repo.tags.create(name, 'HEAD', annotation={:tagger => AUTHOR, :message => 'New annotated tag!'})
     push
   end
 
@@ -80,8 +82,8 @@ class BareTestRepository
     index.add_all
     options = {}
     options[:message] = message
-    options[:committer] = author
-    options[:author] = author
+    options[:committer] = AUTHOR
+    options[:author] = AUTHOR
     options[:tree] = index.write_tree(@workdir_repo)
     options[:parents] = @workdir_repo.empty? ? [] : [@workdir_repo.head.target].compact
     options[:update_ref] = 'HEAD'
