@@ -76,8 +76,6 @@ class BareTestRepository
   private
 
   def commit(message)
-    author = {:email => 'daun@github.com', :time => Time.now, :name => 'daun-tester'}
-
     index = @workdir_repo.index
     index.add_all
     options = {}
