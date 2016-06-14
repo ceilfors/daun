@@ -139,10 +139,9 @@ describe 'daun' do
     bare_repository.create_branch 'feature/bar'
     bare_repository.create_branch 'bugfix/boo'
 
-    daun.config = {
-        'branch.pattern' => 'feature/.*'
+    daun.checkout bare_repository.path, destination, {
+      'branch.pattern' => 'feature/.*'
     }
-    daun.checkout bare_repository.path, destination
 
     expect(File).to exist("#{destination}/branches/feature/foo")
     expect(File).to exist("#{destination}/branches/feature/bar")

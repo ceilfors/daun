@@ -4,17 +4,19 @@ require 'rugged'
 
 class DaunCliDriver
 
-  def checkout remote_url, destination
+  def checkout remote_url, destination, config = {}
     Daun::CLI.start %W{ init #{remote_url} #{destination}}
+
+    repository = Rugged::Repository.new(destination)
+    config.each_pair do | key, value |
+      repository.config["daun.#{key}"] = value
+    end
+
     Daun::CLI.start %W{ checkout --directory #{destination} }
   end
 
   def update repository
     Daun::CLI.start %W{ checkout --directory #{repository} }
-  end
-
-  def config= config
-
   end
 end
 
