@@ -14,7 +14,7 @@ describe 'daun' do
     FileUtils.rm_rf(tmpdir)
   end
 
-  it "checks out master branch" do
+  it 'checks out master branch' do
     bare_repository.write_file "foo.txt", "branch/master"
 
     daun.checkout bare_repository.path, destination
