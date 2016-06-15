@@ -140,18 +140,16 @@ describe 'daun' do
     bare_repository.create_branch 'bugfix/boo'
 
     daun.checkout bare_repository.path, destination, {
-      'branch.pattern' => 'feature/.*'
+      'refs.filter' => 'refs/remotes/origin/feature/.*'
     }
 
     expect(File).to exist("#{destination}/branches/feature/foo")
     expect(File).to exist("#{destination}/branches/feature/bar")
 
-    pending 'implementation'
     expect(File).not_to exist("#{destination}/branches/master")
     expect(File).not_to exist("#{destination}/branches/bugfix/boo")
   end
 
-  it 'does not check out anything other than the branches and tags to avoid clutter'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
   it 'filters tags check out according to the configuration'
