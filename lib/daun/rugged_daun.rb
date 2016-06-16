@@ -45,9 +45,11 @@ class RuggedDaun
     delete_all_tags
     @repository.remotes['origin'].fetch
 
+    # TODO: Clarify config default value
     after_fetch = Hash[@repository.refs
                            .select { |r| r.name[/#{@repository.config['daun.refs.filter']}/] }
                            .collect { |r| [r.canonical_name, r.target_id] }]
+
     RefsDiff.new(before_fetch, after_fetch)
   end
 

@@ -150,6 +150,35 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/branches/bugfix/boo")
   end
 
+  it 'deletes branches based on the updated filter configuration' do
+    bare_repository.create_branch 'bugfix/boo'
+
+    daun.checkout bare_repository.path, destination
+    daun.config destination, {
+        'refs.filter' => 'refs/remotes/origin/feature/.*'
+    }
+    daun.update destination
+
+    expect(File).not_to exist("#{destination}/branches/master")
+    expect(File).not_to exist("#{destination}/branches/bugfix/boo")
+  end
+
+  it 'adds branches based on the updated filter configuration' do
+    bare_repository.create_branch 'bugfix/boo'
+
+    daun.checkout bare_repository.path, destination, {
+        'refs.filter' => 'refs/remotes/origin/feature/.*'
+    }
+    daun.config destination, {
+        'refs.filter' => 'refs/remotes/origin/feature/.*|refs/remotes/origin/bugfix/.*'
+    }
+    daun.update destination
+
+    pending "implementation: filtered references are not reflected in before_fetch"
+    expect(File).not_to exist("#{destination}/branches/master")
+    expect(File).to exist("#{destination}/branches/bugfix/boo")
+  end
+
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
   it 'filters tags check out according to the configuration'

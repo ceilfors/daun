@@ -7,12 +7,16 @@ class DaunCliDriver
   def checkout remote_url, destination, config = {}
     Daun::CLI.start %W{ init #{remote_url} #{destination}}
 
-    repository = Rugged::Repository.new(destination)
-    config.each_pair do | key, value |
-      repository.config["daun.#{key}"] = value
-    end
+    config(destination, config)
 
     Daun::CLI.start %W{ checkout --directory #{destination} }
+  end
+
+  def config repository, config = {}
+    repo = Rugged::Repository.new(repository)
+    config.each_pair do | key, value |
+      repo.config["daun.#{key}"] = value
+    end
   end
 
   def update repository
