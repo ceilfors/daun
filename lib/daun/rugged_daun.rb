@@ -39,16 +39,18 @@ class RuggedDaun
   private
 
   def get_refs_diff
+    # TODO Use r.name? What is the difference with canonical_name?
     before_fetch = Hash[@repository.refs.collect { |r| [ r.canonical_name, r.target_id ] } ]
 
     delete_all_remote_branches # Prune is not supported by rugged! Deleting all remote refs and re-fetch
     delete_all_tags
     @repository.remotes['origin'].fetch
 
-    # TODO: Clarify config default value
-    after_fetch = Hash[@repository.refs
-                           .select { |r| r.name[/#{@repository.config['daun.refs.filter']}/] }
-                           .collect { |r| [r.canonical_name, r.target_id] }]
+    # TODO: Clarify config default value, should the default be initialize in init?
+    @repository.refs
+        .select { |r| not r.name[/#{@repository.config['daun.refs.filter']}/] }
+        .each { |r| @repository.references.delete r }
+    after_fetch = Hash[@repository.refs.collect { |r| [r.canonical_name, r.target_id] }]
 
     RefsDiff.new(before_fetch, after_fetch)
   end

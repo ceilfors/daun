@@ -174,7 +174,6 @@ describe 'daun' do
     }
     daun.update destination
 
-    pending "implementation: filtered references are not reflected in before_fetch"
     expect(File).not_to exist("#{destination}/branches/master")
     expect(File).to exist("#{destination}/branches/bugfix/boo")
   end
