@@ -10,6 +10,7 @@ class RuggedDaun
 
   def init(remote_url)
     @repository.remotes.create('origin', remote_url)
+    @repository.config['daun.refs.filter'] = '.*'
   end
 
   def checkout
