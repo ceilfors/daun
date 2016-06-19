@@ -170,7 +170,7 @@ describe 'daun' do
         'refs.filter' => 'refs/remotes/origin/feature/.*'
     }
     daun.config destination, {
-        'refs.filter' => 'refs/remotes/origin/feature/.*|refs/remotes/origin/bugfix/.*'
+        'refs.filter' => 'refs/remotes/origin/bugfix/.*'
     }
     daun.update destination
 
@@ -178,6 +178,23 @@ describe 'daun' do
     expect(File).to exist("#{destination}/branches/bugfix/boo")
   end
 
+  it 'blacklists tags' do
+    bare_repository.create_lightweight_tag 'v1'
+    bare_repository.create_lightweight_tag 'staged/build1'
+    bare_repository.create_annotated_tag 'build/yesterday'
+
+    daun.checkout bare_repository.path, destination, {
+        'tag.blacklist' => 'staged/.* build/.*'
+    }
+
+    pending "implementation"
+    expect(File).not_to exist("#{destination}/tags/build")
+    expect(File).not_to exist("#{destination}/tags/staged")
+    expect(File).to exist("#{destination}/tags/v1")
+  end
+
+  it 'limits the number of tags being checked out and ordered by date'
+  it 'checks out branch and tags that is nested in a directory'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
   it 'filters tags check out according to the configuration'
