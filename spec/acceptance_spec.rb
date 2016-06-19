@@ -134,14 +134,13 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/tags/annotated")
   end
 
-  it 'filters branches check out according to the configuration' do
+  it 'blacklists branch on first checkout' do
     bare_repository.create_branch 'feature/foo'
     bare_repository.create_branch 'feature/bar'
     bare_repository.create_branch 'bugfix/boo'
 
-    daun.checkout bare_repository.path, destination, {
-      'refs.filter' => 'refs/remotes/origin/feature/.*'
-    }
+    daun.checkout bare_repository.path, destination,
+      'branch.blacklist' => 'master bugfix/*'
 
     expect(File).to exist("#{destination}/branches/feature/foo")
     expect(File).to exist("#{destination}/branches/feature/bar")
@@ -150,35 +149,28 @@ describe 'daun' do
     expect(File).not_to exist("#{destination}/branches/bugfix/boo")
   end
 
-  it 'deletes branches based on the updated filter configuration' do
+  it 'deletes branches based on the updated blacklist configuration' do
     bare_repository.create_branch 'bugfix/boo'
 
     daun.checkout bare_repository.path, destination
-    daun.config destination, {
-        'refs.filter' => 'refs/remotes/origin/feature/.*'
-    }
+    daun.config destination, 'branch.blacklist' => 'bugfix/*'
+
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/branches/master")
     expect(File).not_to exist("#{destination}/branches/bugfix/boo")
   end
 
-  it 'adds branches based on the updated filter configuration' do
+  it 'adds branches based on the removed blacklist configuration' do
     bare_repository.create_branch 'bugfix/boo'
 
-    daun.checkout bare_repository.path, destination, {
-        'refs.filter' => 'refs/remotes/origin/feature/.*'
-    }
-    daun.config destination, {
-        'refs.filter' => 'refs/remotes/origin/bugfix/.*'
-    }
+    daun.checkout bare_repository.path, destination, 'branch.blacklist' => 'bugfix/*'
+    daun.config destination, 'branch.blacklist' => ''
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/branches/master")
     expect(File).to exist("#{destination}/branches/bugfix/boo")
   end
 
-  it 'blacklists tags' do
+  it 'blacklists tags on first checkout' do
     bare_repository.create_lightweight_tag 'v1'
     bare_repository.create_lightweight_tag 'staged/build1'
     bare_repository.create_annotated_tag 'build/yesterday'

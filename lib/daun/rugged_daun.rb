@@ -10,8 +10,8 @@ class RuggedDaun
 
   def init(remote_url)
     @repository.remotes.create('origin', remote_url)
-    @repository.config['daun.refs.filter'] = '.*'
     @repository.config['daun.tag.blacklist'] = ''
+    @repository.config['daun.branch.blacklist'] = ''
   end
 
   def checkout
@@ -49,10 +49,14 @@ class RuggedDaun
     delete_all_tags
     @repository.remotes['origin'].fetch
 
-    # Delete references that doesn't match the filter
-    @repository.refs
-        .reject { |r| r.name[/#{@repository.config['daun.refs.filter']}/] }
-        .each { |r| @repository.references.delete r }
+    # Delete blacklisted references}
+    @repository.config['daun.branch.blacklist'].split.each do |pattern|
+      @repository.branches.each_name(:remote) do |branch|
+        if File.fnmatch? "origin/#{pattern}", branch
+          @repository.branches.delete branch
+        end
+      end
+    end
     @repository.config['daun.tag.blacklist'].split.each do |tag_pattern|
       @repository.tags.each_name(tag_pattern) do |tag|
         @repository.tags.delete tag
