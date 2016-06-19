@@ -183,11 +183,9 @@ describe 'daun' do
     bare_repository.create_lightweight_tag 'staged/build1'
     bare_repository.create_annotated_tag 'build/yesterday'
 
-    daun.checkout bare_repository.path, destination, {
-        'tag.blacklist' => 'staged/.* build/.*'
-    }
+    daun.checkout bare_repository.path, destination,
+        'tag.blacklist' => 'staged/* build/*'
 
-    pending "implementation"
     expect(File).not_to exist("#{destination}/tags/build")
     expect(File).not_to exist("#{destination}/tags/staged")
     expect(File).to exist("#{destination}/tags/v1")

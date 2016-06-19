@@ -11,6 +11,7 @@ class RuggedDaun
   def init(remote_url)
     @repository.remotes.create('origin', remote_url)
     @repository.config['daun.refs.filter'] = '.*'
+    @repository.config['daun.tag.blacklist'] = ''
   end
 
   def checkout
@@ -52,6 +53,12 @@ class RuggedDaun
     @repository.refs
         .reject { |r| r.name[/#{@repository.config['daun.refs.filter']}/] }
         .each { |r| @repository.references.delete r }
+    @repository.config['daun.tag.blacklist'].split.each do |tag_pattern|
+      @repository.tags.each_name(tag_pattern) do |tag|
+        @repository.tags.delete tag
+      end
+    end
+
     after_fetch = Hash[@repository.refs.collect { |r| [r.canonical_name, r.target_id] }]
 
     RefsDiff.new(before_fetch, after_fetch)
