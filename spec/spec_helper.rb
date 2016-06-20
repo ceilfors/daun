@@ -63,6 +63,12 @@ class BareTestRepository
     @workdir_repo.remotes['origin'].push([":refs/tags/#{name}"])
   end
 
+  def create_lightweight_tags(*names)
+    names.each do |name|
+      create_lightweight_tag name
+    end
+  end
+
   def create_lightweight_tag(name)
     if @workdir_repo.tags[name]
       delete_tag name

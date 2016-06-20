@@ -11,6 +11,7 @@ class RuggedDaun
   def init(remote_url)
     @repository.remotes.create('origin', remote_url)
     @repository.config['daun.tag.blacklist'] = ''
+    @repository.config['daun.tag.limit'] = '-1'
     @repository.config['daun.branch.blacklist'] = ''
   end
 

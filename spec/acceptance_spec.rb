@@ -183,7 +183,22 @@ describe 'daun' do
     expect(File).to exist("#{destination}/tags/v1")
   end
 
-  it 'limits the number of tags being checked out and ordered by date'
+  it 'limits the number of tags being checked out and keep the newest ones' do
+    bare_repository.create_lightweight_tags 'e', 'd', 'c', 'b', 'a'
+
+    daun.checkout bare_repository.path, destination,
+                  'tag.limit' => '2'
+
+    pending 'implementation'
+    expect(File).not_to exist("#{destination}/tags/e")
+    expect(File).not_to exist("#{destination}/tags/d")
+    expect(File).not_to exist("#{destination}/tags/c")
+    expect(File).to exist("#{destination}/tags/b")
+    expect(File).to exist("#{destination}/tags/a")
+  end
+
+  it 'deletes tags based on the updated blacklist configuration'
+  it 'adds tags based on the removed blacklist configuration'
   it 'checks out branch and tags that is nested in a directory'
   it 'does not check out branches when it is configured not do so'
   it 'does not check out tags when it is configured not do so'
