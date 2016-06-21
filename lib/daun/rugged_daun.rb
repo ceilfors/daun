@@ -50,19 +50,9 @@ class RuggedDaun
     delete_all_tags
     @repository.remotes['origin'].fetch
 
-    # Delete blacklisted references
-    @repository.config['daun.branch.blacklist'].split.each do |pattern|
-      @repository.branches.each_name(:remote) do |branch|
-        if File.fnmatch? "origin/#{pattern}", branch
-          @repository.branches.delete branch
-        end
-      end
-    end
-    @repository.config['daun.tag.blacklist'].split.each do |tag_pattern|
-      @repository.tags.each_name(tag_pattern) do |tag|
-        @repository.tags.delete tag
-      end
-    end
+    delete_all_remote_branches @repository.config['daun.branch.blacklist'].split
+    delete_all_tags @repository.config['daun.tag.blacklist'].split
+
     if @repository.config['daun.tag.limit'].to_i > -1
       @repository.tags.sort_by { |tag| tag.target.time}
           .take(@repository.tags.count - @repository.config['daun.tag.limit'].to_i)
@@ -88,15 +78,23 @@ class RuggedDaun
     @repository.checkout(@repository.tags[tag].target.oid, strategy: :force, target_directory: target_dir)
   end
 
-  def delete_all_remote_branches
-    @repository.branches.each_name(:remote) do |branch|
-      @repository.branches.delete branch
+  def delete_all_remote_branches(patterns = ['*'])
+    patterns.each do |pattern|
+      @repository.branches.each_name(:remote) do |branch|
+        if File.fnmatch? "origin/#{pattern}", branch
+          @repository.branches.delete branch
+        end
+      end
     end
   end
 
-  def delete_all_tags
-    @repository.tags.each_name do |tag|
-      @repository.tags.delete tag
+  def delete_all_tags(patterns = ['*'])
+    patterns.each do |pattern|
+      @repository.tags.each_name do |tag|
+        if File.fnmatch? pattern, tag
+          @repository.tags.delete tag
+        end
+      end
     end
   end
 
