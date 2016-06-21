@@ -28,7 +28,7 @@ class BareTestRepository
 
   attr_accessor :path
 
-  AUTHOR = {:email => 'daun@github.com', :time => Time.now, :name => 'daun-tester'}
+  AUTHOR = {:email => 'daun@github.com', :name => 'daun-tester'}
 
   def initialize(dir)
     @path = dir
@@ -63,8 +63,9 @@ class BareTestRepository
     @workdir_repo.remotes['origin'].push([":refs/tags/#{name}"])
   end
 
-  def create_lightweight_tags(*names)
-    names.each do |name|
+  def create_lightweight_tags_with_commit_marker(*names)
+    names.each.with_index do |name, i|
+      commit 'Commit market that is useful for tag ordering by date', Time.now + i * 60
       create_lightweight_tag name
     end
   end
@@ -87,7 +88,8 @@ class BareTestRepository
 
   private
 
-  def commit(message)
+  def commit(message, time=Time.now)
+    AUTHOR[:time] = time
     index = @workdir_repo.index
     index.add_all
     options = {}

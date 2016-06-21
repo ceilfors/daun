@@ -184,17 +184,13 @@ describe 'daun' do
   end
 
   it 'limits the number of tags being checked out and keep the newest ones' do
-    bare_repository.create_lightweight_tags 'e', 'd', 'c', 'b', 'a'
+    bare_repository.create_lightweight_tags_with_commit_marker 'e', 'd', 'c', 'b', 'a'
 
     daun.checkout bare_repository.path, destination,
                   'tag.limit' => '2'
 
-    pending 'implementation'
-    expect(File).not_to exist("#{destination}/tags/e")
-    expect(File).not_to exist("#{destination}/tags/d")
-    expect(File).not_to exist("#{destination}/tags/c")
-    expect(File).to exist("#{destination}/tags/b")
-    expect(File).to exist("#{destination}/tags/a")
+    tags = (Dir.entries("#{destination}/tags") - ['.'] - ['..']).to_set
+    expect(tags).to eq Set.new ['b', 'a']
   end
 
   it 'deletes tags based on the updated blacklist configuration'
