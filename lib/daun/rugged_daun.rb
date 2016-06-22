@@ -52,11 +52,8 @@ class RuggedDaun
 
     delete_all_remote_branches @repository.config['daun.branch.blacklist'].split
     delete_all_tags @repository.config['daun.tag.blacklist'].split
-
     if @repository.config['daun.tag.limit'].to_i > -1
-      @repository.tags.sort_by { |tag| tag.target.time}
-          .take(@repository.tags.count - @repository.config['daun.tag.limit'].to_i)
-          .each { |t| @repository.tags.delete t.name }
+      keep_new_tags @repository.config['daun.tag.limit'].to_i
     end
 
     after_fetch = Hash[@repository.refs.collect { |r| [r.canonical_name, r.target_id] }]
@@ -96,6 +93,12 @@ class RuggedDaun
         end
       end
     end
+  end
+
+  def keep_new_tags limit
+    @repository.tags.sort_by { |tag| tag.target.time}
+        .take(@repository.tags.count - limit)
+        .each { |t| @repository.tags.delete t.name }
   end
 
   def get_checkout_directory refs
