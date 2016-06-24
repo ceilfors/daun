@@ -10,6 +10,16 @@ describe 'daun' do
   let(:destination) { File.join(tmpdir, 'repository') }
   let(:daun) { DaunCliDriver.new }
 
+  RSpec::Matchers.define :checkout_tags do |*expected|
+    match do |daun|
+      daun.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
+      destination = daun.last_destination
+      actual_tags = (Dir.entries("#{destination}/tags") - ['.'] - ['..']).to_set
+      expected_tags = Set.new expected
+      actual_tags == expected_tags
+    end
+  end
+
   after(:each) do
     FileUtils.rm_rf(tmpdir)
   end
@@ -189,8 +199,7 @@ describe 'daun' do
     daun.checkout bare_repository.path, destination,
                   'tag.limit' => '2'
 
-    tags = (Dir.entries("#{destination}/tags") - ['.'] - ['..']).to_set
-    expect(tags).to eq Set.new ['b', 'a']
+    expect(daun).to checkout_tags 'b', 'a'
   end
 
   it 'deletes tags based on the updated blacklist configuration'

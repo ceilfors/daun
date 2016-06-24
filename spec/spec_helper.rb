@@ -4,7 +4,10 @@ require 'rugged'
 
 class DaunCliDriver
 
+  attr_reader :last_destination
+
   def checkout remote_url, destination, config = {}
+    @last_destination = destination
     Daun::CLI.start %W{ init #{remote_url} #{destination}}
 
     config(destination, config)
