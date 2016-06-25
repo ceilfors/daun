@@ -70,7 +70,7 @@ describe 'daun' do
 
     daun.checkout bare_repository.path, destination
 
-    expect(File).to exist("#{destination}/tags/lightweight")
+    expect(daun).to checkout_tags 'lightweight'
     expect(File).to exist("#{destination}/tags/lightweight/foo.txt")
     expect(File.read("#{destination}/tags/lightweight/foo.txt")).to match "tag/lightweight"
   end
@@ -81,7 +81,7 @@ describe 'daun' do
 
     daun.checkout bare_repository.path, destination
 
-    expect(File).to exist("#{destination}/tags/annotated")
+    expect(daun).to checkout_tags 'annotated'
     expect(File).to exist("#{destination}/tags/annotated/foo.txt")
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "tag/annotated"
   end
@@ -95,7 +95,7 @@ describe 'daun' do
     bare_repository.create_lightweight_tag 'lightweight'
     daun.update destination
 
-    expect(File).to exist("#{destination}/tags/lightweight")
+    expect(daun).to checkout_tags 'lightweight'
     expect(File).to exist("#{destination}/tags/lightweight/foo.txt")
     expect(File.read("#{destination}/tags/lightweight/foo.txt")).to match "updated"
   end
@@ -109,7 +109,7 @@ describe 'daun' do
     bare_repository.create_annotated_tag 'annotated'
     daun.update destination
 
-    expect(File).to exist("#{destination}/tags/annotated")
+    expect(daun).to checkout_tags 'annotated'
     expect(File).to exist("#{destination}/tags/annotated/foo.txt")
     expect(File.read("#{destination}/tags/annotated/foo.txt")).to match "updated"
   end
@@ -121,7 +121,7 @@ describe 'daun' do
     bare_repository.delete_tag 'lightweight'
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/tags/lightweight")
+    expect(daun).not_to checkout_tags 'lightweight'
   end
 
   it 'deletes annotated tag which have been deleted in remote' do
@@ -131,7 +131,7 @@ describe 'daun' do
     bare_repository.delete_tag 'annotated'
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/tags/annotated")
+    expect(daun).not_to checkout_tags 'annotated'
   end
 
   it 'blacklists branch on first checkout' do
