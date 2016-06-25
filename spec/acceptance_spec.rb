@@ -178,9 +178,8 @@ describe 'daun' do
     daun.checkout bare_repository.path, destination,
         'tag.blacklist' => 'staged/* build/*'
 
-    expect(File).not_to exist("#{destination}/tags/build")
-    expect(File).not_to exist("#{destination}/tags/staged")
-    expect(File).to exist("#{destination}/tags/v1")
+    expect(daun).to checkout_tags 'v1'
+    expect(daun).not_to checkout_tags 'staged/build1', 'build/yesterday'
   end
 
   it 'limits the number of tags being checked out and keep the newest ones' do

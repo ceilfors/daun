@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'daun'
 require 'rugged'
+require 'set'
 
 RSpec::Matchers.define :checkout_tags do |*expected|
   match do |daun|
@@ -9,6 +10,18 @@ RSpec::Matchers.define :checkout_tags do |*expected|
 
   failure_message do |daun|
     "Expected daun to check out tags #{expected.sort} but found #{daun.tags.sort}"
+  end
+
+  match_when_negated do |daun|
+    get_intersection(daun.tags, expected).length == 0
+  end
+
+  failure_message_when_negated do |daun|
+    "Expected daun to not checkout tags #{expected.sort} but found #{get_intersection(daun.tags, expected).sort}"
+  end
+
+  def get_intersection(actual, expected)
+    actual.to_set.intersection expected.to_set
   end
 end
 
