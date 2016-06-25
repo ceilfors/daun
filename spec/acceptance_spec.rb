@@ -19,7 +19,7 @@ describe 'daun' do
 
     daun.checkout bare_repository.path, destination
 
-    expect(File).to exist("#{destination}/branches/master")
+    expect(daun).to checkout_branches 'master'
     expect(File).to exist("#{destination}/branches/master/foo.txt")
     expect(File.read("#{destination}/branches/master/foo.txt")).to match "branch/master"
   end
@@ -40,7 +40,7 @@ describe 'daun' do
 
     daun.checkout bare_repository.path, destination
 
-    expect(File).to exist("#{destination}/branches/other")
+    expect(daun).to checkout_branches 'master', 'other'
     expect(File).to exist("#{destination}/branches/other/foo.txt")
     expect(File.read("#{destination}/branches/other/foo.txt")).to match "branch/other"
   end
@@ -52,7 +52,7 @@ describe 'daun' do
     bare_repository.delete_branch 'other'
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/branches/other")
+    expect(daun).not_to checkout_branches 'other'
   end
 
   it 'adds new branch which have been added after the first checkout' do
@@ -61,7 +61,7 @@ describe 'daun' do
     bare_repository.create_branch 'other'
     daun.update destination
 
-    expect(File).to exist("#{destination}/branches/other")
+    expect(daun).to checkout_branches 'master', 'other'
   end
 
   it 'checks out lightweight tags' do

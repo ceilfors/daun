@@ -25,6 +25,29 @@ RSpec::Matchers.define :checkout_tags do |*expected|
   end
 end
 
+RSpec::Matchers.define :checkout_branches do |*expected|
+  match do |daun|
+    daun.branches.sort == expected.sort
+  end
+
+  failure_message do |daun|
+    "Expected daun to check out branches #{expected.sort} but found #{daun.branches.sort}"
+  end
+
+  match_when_negated do |daun|
+    get_intersection(daun.branches, expected).length == 0
+  end
+
+  failure_message_when_negated do |daun|
+    "Expected daun to not checkout branches #{expected.sort} but found #{get_intersection(daun.branches, expected).sort}"
+  end
+
+  def get_intersection(actual, expected)
+    actual.to_set.intersection expected.to_set
+  end
+end
+
+
 class DaunCliDriver
 
   def checkout remote_url, destination, config = {}
@@ -50,6 +73,11 @@ class DaunCliDriver
   def tags
     self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
     (Dir.entries("#{@last_destination}/tags") - ['.'] - ['..'])
+  end
+
+  def branches
+    self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
+    (Dir.entries("#{@last_destination}/branches") - ['.'] - ['..'])
   end
 end
 
