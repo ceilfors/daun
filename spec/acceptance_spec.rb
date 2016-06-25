@@ -10,16 +10,6 @@ describe 'daun' do
   let(:destination) { File.join(tmpdir, 'repository') }
   let(:daun) { DaunCliDriver.new }
 
-  RSpec::Matchers.define :checkout_tags do |*expected|
-    match do |daun|
-      daun.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
-      destination = daun.last_destination
-      actual_tags = (Dir.entries("#{destination}/tags") - ['.'] - ['..']).to_set
-      expected_tags = Set.new expected
-      actual_tags == expected_tags
-    end
-  end
-
   after(:each) do
     FileUtils.rm_rf(tmpdir)
   end

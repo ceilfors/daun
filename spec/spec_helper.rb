@@ -2,9 +2,17 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'daun'
 require 'rugged'
 
-class DaunCliDriver
+RSpec::Matchers.define :checkout_tags do |*expected|
+  match do |daun|
+    daun.tags.sort == expected.sort
+  end
 
-  attr_reader :last_destination
+  failure_message do |daun|
+    "Expected daun to check out tags #{expected.sort} but found #{daun.tags.sort}"
+  end
+end
+
+class DaunCliDriver
 
   def checkout remote_url, destination, config = {}
     @last_destination = destination
@@ -24,6 +32,11 @@ class DaunCliDriver
 
   def update repository
     Daun::CLI.start %W{ checkout --directory #{repository} }
+  end
+
+  def tags
+    self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
+    (Dir.entries("#{@last_destination}/tags") - ['.'] - ['..'])
   end
 end
 
