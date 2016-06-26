@@ -27,23 +27,19 @@ end
 
 RSpec::Matchers.define :checkout_branches do |*expected|
   match do |daun|
-    daun.branches.sort == expected.sort
+    expected.all? { |branch| File.directory? (File.join(daun.branch_dir, branch)) }
   end
 
   failure_message do |daun|
-    "Expected daun to check out branches #{expected.sort} but found #{daun.branches.sort}"
+    "Expected daun to check out branches #{expected} but could not find #{expected - daun.branches}"
   end
 
   match_when_negated do |daun|
-    get_intersection(daun.branches, expected).length == 0
+    expected.all? { |branch| not File.directory? (File.join(daun.branch_dir, branch)) }
   end
 
   failure_message_when_negated do |daun|
-    "Expected daun to not checkout branches #{expected.sort} but found #{get_intersection(daun.branches, expected).sort}"
-  end
-
-  def get_intersection(actual, expected)
-    actual.to_set.intersection expected.to_set
+    "Expected daun to not checkout branches #{expected} but found #{expected & daun.branches}"
   end
 end
 
@@ -75,9 +71,12 @@ class DaunCliDriver
     (Dir.entries("#{@last_destination}/tags") - ['.'] - ['..'])
   end
 
+  def branch_dir
+    "#{@last_destination}/branches"
+  end
+
   def branches
-    self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
-    (Dir.entries("#{@last_destination}/branches") - ['.'] - ['..'])
+    Rugged::Repository.new(@last_destination).branches.collect { |b| b.canonical_name.to_local_branch }
   end
 end
 

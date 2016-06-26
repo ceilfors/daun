@@ -142,11 +142,8 @@ describe 'daun' do
     daun.checkout bare_repository.path, destination,
       'branch.blacklist' => 'master bugfix/*'
 
-    expect(File).to exist("#{destination}/branches/feature/foo")
-    expect(File).to exist("#{destination}/branches/feature/bar")
-
-    expect(File).not_to exist("#{destination}/branches/master")
-    expect(File).not_to exist("#{destination}/branches/bugfix/boo")
+    expect(daun).to checkout_branches 'feature/foo', 'feature/bar'
+    expect(daun).not_to checkout_branches 'master', 'bugfix/boo'
   end
 
   it 'deletes branches based on the updated blacklist configuration' do
@@ -157,7 +154,7 @@ describe 'daun' do
 
     daun.update destination
 
-    expect(File).not_to exist("#{destination}/branches/bugfix/boo")
+    expect(daun).not_to checkout_branches 'bugfix/boo'
   end
 
   it 'adds branches based on the removed blacklist configuration' do
@@ -167,7 +164,7 @@ describe 'daun' do
     daun.config destination, 'branch.blacklist' => ''
     daun.update destination
 
-    expect(File).to exist("#{destination}/branches/bugfix/boo")
+    expect(daun).to checkout_branches 'bugfix/boo'
   end
 
   it 'blacklists tags on first checkout' do
