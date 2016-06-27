@@ -66,13 +66,20 @@ class DaunCliDriver
     Daun::CLI.start %W{ checkout --directory #{repository} }
   end
 
+
+  def tag_dir name = nil
+    tag_dir  = "#{@last_destination}/tags"
+    name ? tag_dir  << "/#{name}" : tag_dir
+  end
+
   def tags
     self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
     (Dir.entries("#{@last_destination}/tags") - ['.'] - ['..'])
   end
 
-  def branch_dir
-    "#{@last_destination}/branches"
+  def branch_dir name = nil
+    branch_dir = "#{@last_destination}/branches"
+    name ? branch_dir << "/#{name}" : branch_dir
   end
 
   def branches
