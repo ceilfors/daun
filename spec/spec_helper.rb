@@ -1,27 +1,22 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'daun'
 require 'rugged'
-require 'set'
 
 RSpec::Matchers.define :checkout_tags do |*expected|
   match do |daun|
-    daun.tags.sort == expected.sort
+    expected.all? { |tag| File.directory? (File.join(daun.tag_dir, tag)) }
   end
 
   failure_message do |daun|
-    "Expected daun to check out tags #{expected.sort} but found #{daun.tags.sort}"
+    "Expected daun to check out tags #{expected} but could not find #{expected - daun.tags}"
   end
 
   match_when_negated do |daun|
-    get_intersection(daun.tags, expected).length == 0
+    expected.all? { |tag| not File.directory? (File.join(daun.tag_dir, tag)) }
   end
 
   failure_message_when_negated do |daun|
-    "Expected daun to not checkout tags #{expected.sort} but found #{get_intersection(daun.tags, expected).sort}"
-  end
-
-  def get_intersection(actual, expected)
-    actual.to_set.intersection expected.to_set
+    "Expected daun to not checkout tags #{expected} but found #{expected & daun.tags}"
   end
 end
 
@@ -73,8 +68,7 @@ class DaunCliDriver
   end
 
   def tags
-    self.inspect # KLUDGE: Ruby 1.9 bug! Tested in ruby 2.1 and this line is not required
-    (Dir.entries("#{@last_destination}/tags") - ['.'] - ['..'])
+    Rugged::Repository.new(@last_destination).tags.collect { |t| t.canonical_name.to_tag }
   end
 
   def branch_dir name = nil
