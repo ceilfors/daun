@@ -182,10 +182,27 @@ describe 'daun' do
     expect(daun).to checkout_tags 'b', 'a'
   end
 
-  it 'deletes tags based on the updated blacklist configuration'
-  it 'adds tags based on the removed blacklist configuration'
-  it 'checks out branch and tags that is nested in a directory'
-  it 'does not check out branches when it is configured not do so'
-  it 'does not check out tags when it is configured not do so'
-  it 'filters tags check out according to the configuration'
+  it 'deletes tags based on the updated blacklist configuration' do
+    bare_repository.create_lightweight_tag 'v1'
+    bare_repository.create_lightweight_tag 'staged/build1'
+    bare_repository.create_annotated_tag 'build/yesterday'
+
+    daun.checkout bare_repository.path, destination
+    daun.config destination, 'tag.blacklist' => 'build/*'
+    daun.update destination
+
+    expect(daun).not_to checkout_tags 'build/yesterday'
+  end
+
+  it 'adds tags based on the removed blacklist configuration' do
+    bare_repository.create_lightweight_tag 'v1'
+    bare_repository.create_lightweight_tag 'staged/build1'
+    bare_repository.create_annotated_tag 'build/yesterday'
+
+    daun.checkout bare_repository.path, destination, 'tag.blacklist' => 'staged/* build/*'
+    daun.config destination, 'tag.blacklist' => 'build/*'
+    daun.update destination
+
+    expect(daun).to checkout_tags 'staged/build1'
+  end
 end
