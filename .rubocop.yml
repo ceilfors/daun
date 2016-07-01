@@ -1,0 +1,7 @@
+AllCops:
+  Exclude:
+    - spec/**/*
+
+LineLength:
+  Enabled: true
+  Max: 90
