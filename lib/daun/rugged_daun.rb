@@ -42,8 +42,7 @@ class RuggedDaun
   private
 
   def get_refs_diff
-    # TODO Use r.name? What is the difference with canonical_name?
-    before_fetch = Hash[@repository.refs.collect { |r| [ r.canonical_name, r.target_id ] } ]
+    before_fetch = Hash[@repository.refs.collect { |r| [ r.name, r.target_id ] } ]
 
     # Prune is not supported by rugged! Deleting all remote refs and re-fetch
     delete_all_remote_branches
@@ -56,7 +55,7 @@ class RuggedDaun
       keep_new_tags @repository.config['daun.tag.limit'].to_i
     end
 
-    after_fetch = Hash[@repository.refs.collect { |r| [r.canonical_name, r.target_id] }]
+    after_fetch = Hash[@repository.refs.collect { |r| [r.name, r.target_id] }]
 
     RefsDiff.new(before_fetch, after_fetch)
   end
