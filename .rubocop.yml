@@ -3,9 +3,7 @@ AllCops:
     - spec/**/*
 
 LineLength:
-  Enabled: true
   Max: 90
-
 
 # Adopted from https://github.com/codeclimate/codeclimate/blame/master/config/rubocop/.rubocop.yml
 Metrics/MethodLength:
@@ -13,3 +11,7 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   Max: 250
+
+# Conflicts with IntelliJ auto formatting
+Style/MultilineMethodCallIndentation:
+  Enabled: false

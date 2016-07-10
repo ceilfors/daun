@@ -1,3 +1,4 @@
+# Produce git refs differences before and after fetch
 class RefsDiff
 
   attr_accessor :added_remotes
@@ -8,26 +9,26 @@ class RefsDiff
   end
 
   def added(type = nil)
-    keys = (@after.keys - @before.keys).collect { |k| k.to_s }
+    keys = (@after.keys - @before.keys).collect(&:to_s)
     filter(keys, type)
   end
 
   def updated(type = nil)
     keys = (@after.keys + @before.keys)
-        .group_by { |k| k }
-        .select { |k, k_group| k_group.size > 1 && @before[k] != @after[k] }
-        .collect { |k, k_group| k.to_s }
+               .group_by { |k| k }
+               .select { |k, k_group| k_group.size > 1 && @before[k] != @after[k] }
+               .keys.collect(&:to_s)
     filter(keys, type)
   end
 
   def deleted(type = nil)
-    keys = (@before.keys - @after.keys).collect { |k| k.to_s }
+    keys = (@before.keys - @after.keys).collect(&:to_s)
     filter(keys, type)
   end
 
   private
 
   def filter(keys, type)
-    type != nil ? keys.select { |k| k.start_with? "refs/#{type}" } : keys
+    !type.nil? ? keys.select { |k| k.start_with? "refs/#{type}" } : keys
   end
 end
