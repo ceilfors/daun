@@ -5,3 +5,11 @@ AllCops:
 LineLength:
   Enabled: true
   Max: 90
+
+
+# Adopted from https://github.com/codeclimate/codeclimate/blame/master/config/rubocop/.rubocop.yml
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/ModuleLength:
+  Max: 250
