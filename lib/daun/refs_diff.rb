@@ -1,6 +1,5 @@
 # Produce git refs differences before and after fetch
 class RefsDiff
-
   attr_accessor :added_remotes
 
   def initialize(before, after)
