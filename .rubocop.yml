@@ -12,6 +12,9 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 250
 
+Metrics/AbcSize:
+  Max: 20
+
 # Conflicts with IntelliJ auto formatting
 Style/MultilineMethodCallIndentation:
   Enabled: false
