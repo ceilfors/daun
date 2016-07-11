@@ -16,7 +16,6 @@ SimpleCov.start do
       ])
 end
 
-require 'daun'
 require 'rugged'
 
 RSpec::Matchers.define :checkout_tags do |*expected|
