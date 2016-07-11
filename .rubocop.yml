@@ -13,6 +13,7 @@ Metrics/ModuleLength:
   Max: 250
 
 Metrics/AbcSize:
+  Enabled: false
   Max: 20
 
 # Conflicts with IntelliJ auto formatting
