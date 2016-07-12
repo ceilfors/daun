@@ -4,7 +4,6 @@ require 'fileutils'
 require 'tmpdir'
 
 describe 'daun' do
-
   let(:tmpdir) { Dir.mktmpdir }
   let(:bare_repository) { BareTestRepository.new(File.join(tmpdir, 'bare-repository')) }
   let(:destination) { File.join(tmpdir, 'repository') }
@@ -15,32 +14,32 @@ describe 'daun' do
   end
 
   it 'checks out master branch' do
-    bare_repository.write_file "foo.txt", "branch/master"
+    bare_repository.write_file 'foo.txt', 'branch/master'
 
     daun.checkout bare_repository.path, destination
 
     expect(daun).to checkout_branches 'master'
-    expect(File.read("#{daun.branch_dir 'master'}/foo.txt")).to match "branch/master"
+    expect(File.read("#{daun.branch_dir 'master'}/foo.txt")).to match 'branch/master'
   end
 
   it 'updates master branch with the latest change' do
-    bare_repository.write_file "foo.txt", "master"
+    bare_repository.write_file 'foo.txt', 'master'
     daun.checkout bare_repository.path, destination
 
-    bare_repository.write_file "foo.txt", "updated"
+    bare_repository.write_file 'foo.txt', 'updated'
     daun.update destination
 
-    expect(File.read("#{daun.branch_dir 'master'}/foo.txt")).to match "updated"
+    expect(File.read("#{daun.branch_dir 'master'}/foo.txt")).to match 'updated'
   end
 
   it 'checks out other branch' do
     bare_repository.create_branch 'other'
-    bare_repository.write_file "foo.txt", "branch/other"
+    bare_repository.write_file 'foo.txt', 'branch/other'
 
     daun.checkout bare_repository.path, destination
 
     expect(daun).to checkout_branches 'master', 'other'
-    expect(File.read("#{daun.branch_dir 'other'}/foo.txt")).to match "branch/other"
+    expect(File.read("#{daun.branch_dir 'other'}/foo.txt")).to match 'branch/other'
   end
 
   it 'deletes branch which have been deleted' do
@@ -63,49 +62,49 @@ describe 'daun' do
   end
 
   it 'checks out lightweight tags' do
-    bare_repository.write_file "foo.txt", "tag/lightweight"
+    bare_repository.write_file 'foo.txt', 'tag/lightweight'
     bare_repository.create_lightweight_tag 'lightweight'
 
     daun.checkout bare_repository.path, destination
 
     expect(daun).to checkout_tags 'lightweight'
-    expect(File.read("#{daun.tag_dir 'lightweight'}/foo.txt")).to match "tag/lightweight"
+    expect(File.read("#{daun.tag_dir 'lightweight'}/foo.txt")).to match 'tag/lightweight'
   end
 
   it 'checks out annotated tags' do
-    bare_repository.write_file "foo.txt", "tag/annotated"
+    bare_repository.write_file 'foo.txt', 'tag/annotated'
     bare_repository.create_annotated_tag 'annotated'
 
     daun.checkout bare_repository.path, destination
 
     expect(daun).to checkout_tags 'annotated'
-    expect(File.read("#{daun.tag_dir 'annotated'}/foo.txt")).to match "tag/annotated"
+    expect(File.read("#{daun.tag_dir 'annotated'}/foo.txt")).to match 'tag/annotated'
   end
 
   it 'updates lightweight tags with the latest change' do
-    bare_repository.write_file "foo.txt", "original"
+    bare_repository.write_file 'foo.txt', 'original'
     bare_repository.create_lightweight_tag 'lightweight'
     daun.checkout bare_repository.path, destination
 
-    bare_repository.write_file "foo.txt", "updated"
+    bare_repository.write_file 'foo.txt', 'updated'
     bare_repository.create_lightweight_tag 'lightweight'
     daun.update destination
 
     expect(daun).to checkout_tags 'lightweight'
-    expect(File.read("#{daun.tag_dir 'lightweight'}/foo.txt")).to match "updated"
+    expect(File.read("#{daun.tag_dir 'lightweight'}/foo.txt")).to match 'updated'
   end
 
   it 'updates annotated tags with the latest change' do
-    bare_repository.write_file "foo.txt", "original"
+    bare_repository.write_file 'foo.txt', 'original'
     bare_repository.create_annotated_tag 'annotated'
     daun.checkout bare_repository.path, destination
 
-    bare_repository.write_file "foo.txt", "updated"
+    bare_repository.write_file 'foo.txt', 'updated'
     bare_repository.create_annotated_tag 'annotated'
     daun.update destination
 
     expect(daun).to checkout_tags 'annotated'
-    expect(File.read("#{daun.tag_dir 'annotated'}/foo.txt")).to match "updated"
+    expect(File.read("#{daun.tag_dir 'annotated'}/foo.txt")).to match 'updated'
   end
 
   it 'deletes lightweight tag which have been deleted in remote' do
@@ -134,7 +133,7 @@ describe 'daun' do
     bare_repository.create_branch 'bugfix/boo'
 
     daun.checkout bare_repository.path, destination,
-      'branch.blacklist' => 'master bugfix/*'
+                  'branch.blacklist' => 'master bugfix/*'
 
     expect(daun).to checkout_branches 'feature/foo', 'feature/bar'
     expect(daun).not_to checkout_branches 'master', 'bugfix/boo'
@@ -167,7 +166,7 @@ describe 'daun' do
     bare_repository.create_annotated_tag 'build/yesterday'
 
     daun.checkout bare_repository.path, destination,
-        'tag.blacklist' => 'staged/* build/*'
+                  'tag.blacklist' => 'staged/* build/*'
 
     expect(daun).to checkout_tags 'v1'
     expect(daun).not_to checkout_tags 'staged/build1', 'build/yesterday'

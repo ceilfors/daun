@@ -1,9 +1,5 @@
-AllCops:
-  Exclude:
-    - spec/**/*
-
 LineLength:
-  Max: 90
+  Max: 120
 
 # Adopted from https://github.com/codeclimate/codeclimate/blame/master/config/rubocop/.rubocop.yml
 Metrics/MethodLength:
