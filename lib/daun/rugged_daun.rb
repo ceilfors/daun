@@ -2,8 +2,9 @@ require 'rugged'
 require 'fileutils'
 require 'daun/refs_diff'
 
-# Implementation of daun using Rugged library.
 module Daun
+  ##
+  # Implementation of daun using Rugged library.
   class RuggedDaun
     def initialize(repository_path)
       @repository = Rugged::Repository.init_at(repository_path)
@@ -97,8 +98,8 @@ module Daun
 
     def keep_new_tags(limit)
       @repository.tags.sort_by { |tag| tag.target.time }
-          .take(@repository.tags.count - limit)
-          .each { |t| @repository.tags.delete t.name }
+        .take(@repository.tags.count - limit)
+        .each { |t| @repository.tags.delete t.name }
     end
 
     def get_checkout_directory(refs)

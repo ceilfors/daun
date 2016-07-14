@@ -1,5 +1,6 @@
-# Produce git refs differences before and after fetch
 module Daun
+  ##
+  # Produce git refs differences before and after fetch
   class RefsDiff
     attr_accessor :added_remotes
 
