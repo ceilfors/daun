@@ -26,7 +26,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'detects new references' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.added).to match_array(example[:expected])
     end
@@ -51,7 +51,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'filters added references by type' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.added(example[:type])).to match_array(example[:expected])
     end
@@ -79,7 +79,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'detects updated references' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.updated).to match_array(example[:expected])
     end
@@ -99,7 +99,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'filters updated references by type' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.updated(example[:type])).to match_array(example[:expected])
     end
@@ -129,7 +129,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'detects deleted references' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.deleted).to match_array(example[:expected])
     end
@@ -153,7 +153,7 @@ describe 'refs_diff' do
     }
   ].each do |example|
     it 'filters deleted references by type' do
-      ref_diff = RefsDiff.new(example[:before], example[:after])
+      ref_diff = Daun::RefsDiff.new(example[:before], example[:after])
 
       expect(ref_diff.deleted(example[:type])).to match_array(example[:expected])
     end
