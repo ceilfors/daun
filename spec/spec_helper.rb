@@ -2,6 +2,11 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'simplecov'
 require 'codeclimate-test-reporter'
+require 'rspec'
+require 'rugged'
+require 'daun/cli'
+require 'fileutils'
+require 'tmpdir'
 
 if ENV['CIRCLE_ARTIFACTS']
   dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
@@ -16,8 +21,6 @@ SimpleCov.start do
     ]
   )
 end
-
-require 'rugged'
 
 RSpec::Matchers.define :checkout_tags do |*expected|
   match do |daun|

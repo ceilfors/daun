@@ -1,7 +1,4 @@
 require 'spec_helper'
-require 'daun/cli'
-require 'fileutils'
-require 'tmpdir'
 
 describe 'daun' do
   let(:tmpdir) { Dir.mktmpdir }

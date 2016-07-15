@@ -1,5 +1,4 @@
-require 'rspec'
-require 'daun/refs_diff'
+require 'spec_helper'
 
 describe 'refs_diff' do
   [
