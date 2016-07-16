@@ -11,7 +11,7 @@ module Daun
     end
 
     desc 'checkout', 'Checks out git working tree as per daun configuration'
-    option :directory
+    option :directory, default: '.'
 
     def checkout
       Daun::RuggedDaun.new(options[:directory]).checkout
