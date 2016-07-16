@@ -1,5 +1,5 @@
 require 'thor'
-require 'daun/rugged_daun'
+require 'daun'
 
 module Daun
   # Daun CLI. All commands are made available by this class.

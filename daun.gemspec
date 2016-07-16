@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency     'json',                      '< 2' # json 2 requires ruby 2
   spec.add_runtime_dependency     'thor',                      '~> 0.19', '>= 0.19.1'
+  spec.add_runtime_dependency     'logging',                   '~> 2.0'
 
   # Can't pull 0.24.0 yet because this depends on the libgit2 version installed locally
   # Also need to check on how we can enable `submodules: true` in gemspec

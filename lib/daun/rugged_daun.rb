@@ -1,6 +1,6 @@
 require 'rugged'
 require 'fileutils'
-require 'daun/refs_diff'
+require 'logging'
 
 module Daun
   ##
@@ -8,6 +8,7 @@ module Daun
   class RuggedDaun
     def initialize(repository_path)
       @repository = Rugged::Repository.init_at(repository_path)
+      @logger = Logging.logger[self]
     end
 
     def init(remote_url)
@@ -18,27 +19,40 @@ module Daun
     end
 
     def checkout
+      @logger.info 'Fetching git repository..'
       refs_diff = fetch_refs
 
-      (refs_diff.added(:remotes) + refs_diff.updated(:remotes)).each do |refs|
+      refs_diff.added(:remotes).each do |refs|
+        @logger.info "Adding #{refs}.."
+        checkout_remote_branch refs.to_local_branch, get_checkout_directory(refs)
+      end
+
+      refs_diff.updated(:remotes).each do |refs|
+        @logger.info "Updating #{refs}.."
         checkout_remote_branch refs.to_local_branch, get_checkout_directory(refs)
       end
 
       refs_diff.deleted(:remotes).each do |refs|
+        @logger.info "Deleting #{refs}.."
         FileUtils.rm_rf get_checkout_directory refs
       end
 
       refs_diff.added(:tags).each do |refs|
+        @logger.info "Adding #{refs}.."
         checkout_tag refs.to_tag, get_checkout_directory(refs)
       end
 
       refs_diff.updated(:tags).each do |refs|
+        @logger.info "Updating #{refs}.."
         checkout_tag(refs.to_tag, get_checkout_directory(refs), force: true)
       end
 
       refs_diff.deleted(:tags).each do |refs|
+        @logger.info "Deleting #{refs}.."
         FileUtils.rm_rf get_checkout_directory refs
       end
+
+      @logger.info "Finished checking out #{@repository.remotes['origin'].url}"
     end
 
     private
