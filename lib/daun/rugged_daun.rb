@@ -52,7 +52,7 @@ module Daun
         FileUtils.rm_rf get_checkout_directory refs
       end
 
-      @logger.info "Finished checking out #{@repository.remotes['origin'].url}"
+      @logger.info "Finished checking out #{@repository.remotes['origin'].url} to #{@repository.path}"
     end
 
     private
