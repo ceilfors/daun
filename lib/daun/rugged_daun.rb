@@ -1,6 +1,5 @@
 require 'rugged'
 require 'fileutils'
-require 'logging'
 
 module Daun
   ##
