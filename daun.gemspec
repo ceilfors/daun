@@ -2,6 +2,7 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'daun/version'
+require 'rbconfig'
 
 Gem::Specification.new do |spec|
   spec.name          = 'daun'
@@ -33,7 +34,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     'thor',                      '~> 0.19', '>= 0.19.1'
   spec.add_runtime_dependency     'logging',                   '~> 2.0'
 
-  # Can't pull 0.24.0 yet because this depends on the libgit2 version installed locally
-  # Also need to check on how we can enable `submodules: true` in gemspec
-  spec.add_runtime_dependency     'rugged',                    '~> 0.23.0'
+  if RbConfig::CONFIG['host_os'] === /solaris|bsd|linux/
+    spec.add_runtime_dependency     'rugged',                    '~> 0.21.0'
+  else
+    # Can't pull 0.24.0 yet because this depends on the libgit2 version installed locally
+    spec.add_development_dependency 'rugged',                    '~> 0.23.0'
+  end
 end
