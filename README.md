@@ -1,7 +1,8 @@
 # Daun
 
 Daun is a CLI program that will expand your git branches and tags to your disk
-as directories.
+as directories. Daun will keep the expanded directories in sync whenever there are
+new, updated, or deleted tags and branches.
 
 ## Installation
 
@@ -39,7 +40,7 @@ by setting the `global` or `system` git configuration.
 
 * daun.branch.blacklist
 
-    Default: ""
+    Default: ""  
     Example: "hotfix/* release/*"
 
     Branches that match the pattern set in this option will not be checked out by daun.
@@ -49,7 +50,7 @@ by setting the `global` or `system` git configuration.
 
 * daun.tag.blacklist
   
-    Default: ""
+    Default: ""  
     Example: "staged/* build/*"
   
     Tags that match the pattern set in this option will not be checked out by daun.
@@ -59,7 +60,7 @@ by setting the `global` or `system` git configuration.
   
 * daun.tag.limit
 
-    default: -1 (unlimited)
+    default: -1 (unlimited)  
     Example: 5
 
     This option limits the number of tags being checked out by daun. Daun will
