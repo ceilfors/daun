@@ -2,20 +2,15 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'simplecov'
 require 'codeclimate-test-reporter'
-require 'rspec'
-require 'rugged'
-require 'daun/cli'
-require 'fileutils'
-require 'tmpdir'
 
-Logging.logger.root.level = :off
-
+# SimpleCov.start must be issued before application code is 'require'd!
 if ENV['CIRCLE_ARTIFACTS']
   dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
   SimpleCov.coverage_dir(dir)
 end
 SimpleCov.minimum_coverage 90
 SimpleCov.start do
+  add_filter '/spec/'
   formatter SimpleCov::Formatter::MultiFormatter.new(
     [
       SimpleCov::Formatter::HTMLFormatter,
@@ -23,6 +18,14 @@ SimpleCov.start do
     ]
   )
 end
+
+require 'rspec'
+require 'rugged'
+require 'daun/cli'
+require 'fileutils'
+require 'tmpdir'
+
+Logging.logger.root.level = :off
 
 RSpec::Matchers.define :checkout_tags do |*expected|
   match do |daun|
