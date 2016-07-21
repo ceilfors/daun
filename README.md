@@ -1,3 +1,7 @@
+[![Build Status](https://img.shields.io/circleci/project/ceilfors/daun/master.svg?label=Build Status)](https://circleci.com/gh/ceilfors/daun/tree/master)
+[![Code Climate](https://codeclimate.com/github/ceilfors/daun/badges/gpa.svg)](https://codeclimate.com/github/ceilfors/daun)
+[![Test Coverage](https://codeclimate.com/github/ceilfors/daun/badges/coverage.svg)](https://codeclimate.com/github/ceilfors/daun/coverage)
+
 # Daun
 
 Daun is a CLI program that will expand git branches and tags to your disk
