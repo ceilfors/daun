@@ -70,7 +70,7 @@ The following options are available in daun:
 
     Branches that match the pattern set in this option will not be checked out by daun.
     Multiple patterns are supported by space character. Pattern is matched by using
-    [File.fnmatch?](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
+    [`File.fnmatch?`](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
     
     Daun will by default check out all branches. The example above will blacklist any
     branches that have hotfix/ or release/ prefix.
@@ -82,7 +82,7 @@ The following options are available in daun:
   
     Tags that match the pattern set in this option will not be checked out by daun.
     Multiple patterns are supported by space character. Pattern is matched by using
-    [File.fnmatch?](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
+    [`File.fnmatch?`](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
 
     Daun will by default check out all tags. The example above will blacklist any
     tags that have staged/ or build/ prefix.
