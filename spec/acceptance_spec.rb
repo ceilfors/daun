@@ -176,6 +176,7 @@ describe 'daun' do
                   'tag.limit' => '2'
 
     expect(daun).to checkout_tags 'b', 'a'
+    expect(daun).not_to checkout_tags 'e', 'd', 'c'
   end
 
   it 'deletes tags based on the updated blacklist configuration' do
