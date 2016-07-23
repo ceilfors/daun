@@ -142,7 +142,6 @@ end
 
 # Add convenience methods to grab information from git refs
 class String
-
   # Grabs branch name from git remote refs.
   def to_local_branch
     self[%r{refs/remotes/origin/(.*)}, 1]
