@@ -67,41 +67,50 @@ for more information.
 
 The following options are available in daun:
 
-* daun.branch.blacklist
 
-    Default: ""  
-    Example: "hotfix/* release/*"
-
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Default</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <th>daun.branch.blacklist</th>
+    <td>
     Branches that match the pattern set in this option will not be checked out by daun.
     Multiple patterns are supported by space character. Pattern is matched by using
-    [`File.fnmatch?`](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
-    
-    Daun will by default check out all branches. The example above will blacklist any
+    <code><a href="http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F">File.fnmatch?</a></code> method.
+    Daun will by default check out all branches. The example given will blacklist any
     branches that have hotfix/ or release/ prefix.
-
-* daun.tag.blacklist
-  
-    Default: ""  
-    Example: "staged/* build/*"
-  
+    </td>
+    <td>""</td>
+    <td>"hotfix/* release/*"</td>
+  </tr>
+  <tr>
+    <th>daun.tag.blacklist</th>
+    <td>
     Tags that match the pattern set in this option will not be checked out by daun.
     Multiple patterns are supported by space character. Pattern is matched by using
-    [`File.fnmatch?`](http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F) method.
-
-    Daun will by default check out all tags. The example above will blacklist any
+    <code><a href="http://ruby-doc.org/core-1.9.3/File.html#method-c-fnmatch-3F">File.fnmatch?</a></code> method.
+    Daun will by default check out all tags. The example given will blacklist any
     tags that have staged/ or build/ prefix.
-  
-* daun.tag.limit
-
-    default: -1 (unlimited)  
-    Example: 5
-
+    </td>
+    <td>""</td>
+    <td>"staged/* build/*"</td>
+  </tr>
+  <tr>
+    <th>daun.tag.limit</th>
+    <td>
     This option limits the number of tags being checked out by daun. Daun will
     always keep the latest tags e.g. ordered by date.
-    
-    Daun will by default check out all tags without any limit. With the example above,
+    Daun will by default check out all tags without any limit. With the example given,
     daun will only check out the latest 5 tags and ignore the older ones. You can also
     set this value to 0 if you don't want to check out any tags at all.
+    </td>
+    <td>-1 (unlimited)</td>
+    <td>5</td>
+</table>
 
 ## Contributing
 
