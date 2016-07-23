@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.6',  '>= 0.6.0'
   spec.add_development_dependency 'rubocop',                   '~> 0.41', '>= 0.41.1'
   spec.add_development_dependency 'rspec_junit_formatter',     '~> 0.2',  '>= 0.2.2'
+  spec.add_development_dependency 'yard',                      '~> 0.9',  '>= 0.9.4'
+  spec.add_development_dependency 'redcarpet',                 '~> 3.3',  '>= 3.3.4'
 
   spec.add_runtime_dependency     'json',                      '< 2' # json 2 requires ruby 2
   spec.add_runtime_dependency     'thor',                      '~> 0.19', '>= 0.19.1'

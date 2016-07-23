@@ -2,7 +2,7 @@ require 'thor'
 require 'daun'
 
 module Daun
-  # Daun CLI. All commands are made available by this class.
+  # All daun cli subcommands are made available by this class.
   class CLI < Thor
     desc 'init remote_url destination', 'Initialize a daun directory'
 

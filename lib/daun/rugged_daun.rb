@@ -2,14 +2,19 @@ require 'rugged'
 require 'fileutils'
 
 module Daun
-  ##
   # Implementation of daun using Rugged library.
   class RuggedDaun
+    # Creates a new RuggedDaun instance. An empty git repository will be initialized in the specified repository_path.
+    #
+    # @param repository_path [String] the path where the git repository will be created
     def initialize(repository_path)
       @repository = Rugged::Repository.init_at(repository_path)
       @logger = Logging.logger[self]
     end
 
+    # Bootstraps the git repository with the git remote repository URL and the default daun configurations.
+    #
+    # @param remote_url [String] the git remote repository to be fetched every time {#checkout} is called
     def init(remote_url)
       @repository.remotes.create('origin', remote_url)
       @repository.config['daun.tag.blacklist'] = ''
@@ -17,6 +22,13 @@ module Daun
       @repository.config['daun.branch.blacklist'] = ''
     end
 
+    # Checkout git branches and tags in the git repository working directory.
+    #
+    # This method will fetch the latest update from `git remote origin` configured
+    # in the {#init} method.
+    # Once the references are fetch, it will detect if there are new references,
+    # updated references, and deleted references then act upon them
+    # accordingly.
     def checkout
       @logger.info 'Fetching git repository..'
       refs_diff = fetch_refs
@@ -56,6 +68,7 @@ module Daun
 
     private
 
+    # Fetch refs from origin.
     def fetch_refs
       before_fetch = Hash[@repository.refs.collect { |r| [r.name, r.target_id] }]
 
@@ -129,10 +142,13 @@ end
 
 # Add convenience methods to grab information from git refs
 class String
+
+  # Grabs branch name from git remote refs.
   def to_local_branch
     self[%r{refs/remotes/origin/(.*)}, 1]
   end
 
+  # Grabs tag name from git tag refs.
   def to_tag
     self[%r{refs/tags/(.*)}, 1]
   end
