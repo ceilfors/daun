@@ -11,8 +11,9 @@ Gem::Specification.new do |spec|
   spec.email         = ['wisen@ceilfors.com']
 
   spec.summary       = 'Expand git branches and tags to a directory'
-  spec.description   = 'Daun is useful for source code search like OpenGrok that'\
-                       'does not support git branches and tags by default.'
+  spec.description   = 'Daun is a CLI program that will expand git branches and tags to your disk'\
+                       ' as directories. Daun will keep the expanded directories in sync whenever there are'\
+                       ' new, updated, or deleted tags and branches.'
   spec.homepage      = 'https://github.com/ceilfors/daun'
   spec.license       = 'MIT'
 
