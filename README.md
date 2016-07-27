@@ -13,12 +13,6 @@ Daun is originally designed to help index your source code in [OpenGrok](https:/
 
 ## Installation
 
-#### Linux
-
-    $ gem install daun
-
-#### Other OS
-
     $ gem install rugged
     $ gem install daun
 
@@ -28,6 +22,8 @@ can [be](https://github.com/libgit2/rugged/issues/43)
 to be installed in OS other than Linux hence it has been made an optional dependency.
 Because of this, you have to be able to install rugged gem manually first before
 installing daun. Visit rugged documentation if you have problem installing rugged.
+
+Daun has been tested against rugged version 0.21.0 to 0.24.0.
 
 ## Usage
 
