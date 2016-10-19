@@ -27,6 +27,11 @@ require 'tmpdir'
 
 Logging.logger.root.level = :off
 
+RSpec.configure do |config|
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
+end
+
 RSpec::Matchers.define :checkout_tags do |*expected|
   match do |daun|
     expected.all? { |tag| File.directory?(File.join(daun.tag_dir, tag)) }
