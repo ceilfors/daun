@@ -22,6 +22,11 @@ module Daun
       @repository.config['daun.branch.blacklist'] = ''
     end
 
+    # Returns the git repository config as hash.
+    def config
+      @repository.config
+    end
+
     # Checkout git branches and tags in the git repository working directory.
     #
     # This method will fetch the latest update from `git remote origin` configured
@@ -123,9 +128,11 @@ module Daun
     end
 
     def keep_new_tags(limit)
-      @repository.tags.sort_by { |tag| tag.target.time }
-        .take(@repository.tags.count - limit)
-        .each { |t| @repository.tags.delete t.name }
+      if @repository.tags.count > limit
+        @repository.tags.sort_by { |tag| tag.target.time }
+          .take(@repository.tags.count - limit)
+          .each { |t| @repository.tags.delete t.name }
+      end
     end
 
     def get_checkout_directory(refs)
