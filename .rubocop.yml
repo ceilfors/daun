@@ -12,6 +12,9 @@ Metrics/AbcSize:
   Enabled: false
   Max: 20
 
+Metrics/ClassLength:
+  Max: 250
+
 # Conflicts with IntelliJ auto formatting
 Style/MultilineMethodCallIndentation:
   Enabled: false
