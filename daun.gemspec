@@ -38,11 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     'json',                      '< 2' # json 2 requires ruby 2
   spec.add_runtime_dependency     'thor',                      '~> 0.19', '>= 0.19.1'
   spec.add_runtime_dependency     'logging',                   '~> 2.0'
-
-  if RbConfig::CONFIG['host_os'] =~ /solaris|bsd|linux/
-    spec.add_runtime_dependency     'rugged',                    '~> 0.21'
-  else
-    # Can't pull 0.24.0 yet because this depends on the libgit2 version installed locally
-    spec.add_development_dependency 'rugged',                    '~> 0.23.0'
-  end
+  spec.add_runtime_dependency     'rugged',                    '~> 0.21'
 end
