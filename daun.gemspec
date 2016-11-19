@@ -39,4 +39,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency     'thor',                      '~> 0.19', '>= 0.19.1'
   spec.add_runtime_dependency     'logging',                   '~> 2.0'
   spec.add_runtime_dependency     'rugged',                    '~> 0.21'
+  spec.add_runtime_dependency     'git_clone_url',             '~> 2.0'
 end

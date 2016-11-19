@@ -1,6 +1,7 @@
 require 'rugged'
 require 'fileutils'
 require 'core_ext/string'
+require 'git_clone_url'
 
 module Daun
   # Implementation of daun using Rugged library.
@@ -81,7 +82,21 @@ module Daun
       # Prune is not supported by rugged! Deleting all remote refs and re-fetch
       delete_all_remote_branches
       delete_all_tags
-      @repository.remotes['origin'].fetch
+
+      origin = @repository.remotes['origin']
+      origin_uri = GitCloneUrl.parse(origin.url)
+
+      fetch_options = {}
+      if [nil, 'ssh'].include? origin_uri.scheme
+        credentials = Rugged::Credentials::SshKey.new(
+            :username   => origin_uri.user,
+            :privatekey => File.join(ENV['HOME'], '.ssh', 'id_rsa'),
+            :publickey  => File.join(ENV['HOME'], '.ssh', 'id_rsa.pub'),
+        )
+        fetch_options[:credentials] = credentials
+      end
+
+      origin.fetch(nil, fetch_options)
 
       delete_all_remote_branches @repository.config['daun.branch.blacklist'].split
       delete_all_tags @repository.config['daun.tag.blacklist'].split
