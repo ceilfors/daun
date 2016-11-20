@@ -1,7 +1,7 @@
 LineLength:
   Max: 120
 
-# Adopted from https://github.com/codeclimate/codeclimate/blame/master/config/rubocop/.rubocop.yml
+# Adopted from https://github.com/codeclimate/codeclimate/blob/master/config/rubocop/.rubocop.yml
 Metrics/MethodLength:
   Max: 30
 
@@ -17,4 +17,7 @@ Metrics/ClassLength:
 
 # Conflicts with IntelliJ auto formatting
 Style/MultilineMethodCallIndentation:
+  Enabled: false
+
+Style/CaseIndentation:
   Enabled: false
