@@ -1,6 +1,5 @@
 require 'thor'
 require 'daun'
-require 'uri'
 require 'git_clone_url'
 
 module Daun
