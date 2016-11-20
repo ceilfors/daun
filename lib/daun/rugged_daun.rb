@@ -1,7 +1,6 @@
 require 'rugged'
 require 'fileutils'
 require 'core_ext/string'
-require 'git_clone_url'
 
 module Daun
   # Implementation of daun using Rugged library.
