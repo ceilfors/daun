@@ -1,6 +1,5 @@
 require 'thor'
 require 'daun'
-require 'rugged'
 require 'uri'
 require 'git_clone_url'
 
