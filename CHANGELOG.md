@@ -19,6 +19,6 @@
 - Initial release.
 
 [Unreleased]: https://github.com/ceilfors/daun/compare/v0.2.0...HEAD
-[Unreleased]: https://github.com/ceilfors/daun/compare/v0.1.3...v0.2.0
+[0.2.0]: https://github.com/ceilfors/daun/compare/v0.1.3...v0.2.0
 [0.1.2]: https://github.com/ceilfors/daun/compare/v0.1.0...v0.1.2
 [0.1.3]: https://github.com/ceilfors/daun/compare/v0.1.2...v0.1.3
