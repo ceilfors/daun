@@ -1,12 +1,15 @@
 require 'rugged'
 require 'fileutils'
 require 'core_ext/string'
+require 'git_clone_url'
 
 module Daun
   # Implementation of daun using Rugged library.
   class RuggedDaun
     # Creates a new RuggedDaun instance. An empty git repository will be initialized in the specified repository_path.
     #
+    attr_reader :repository
+
     # @param repository_path [String] the path where the git repository will be created
     def initialize(repository_path)
       @repository = Rugged::Repository.init_at(repository_path)
@@ -35,9 +38,13 @@ module Daun
     # Once the references are fetch, it will detect if there are new references,
     # updated references, and deleted references then act upon them
     # accordingly.
-    def checkout
+    def checkout(credentials = nil)
       @logger.info 'Fetching git repository..'
-      refs_diff = fetch_refs
+
+      fetch_options = {}
+      fetch_options[:credentials] = credentials unless credentials.nil?
+
+      refs_diff = fetch_refs fetch_options
 
       refs_diff.added(:remotes).each do |refs|
         @logger.info "Adding #{refs}.."
@@ -75,13 +82,14 @@ module Daun
     private
 
     # Fetch refs from origin.
-    def fetch_refs
+    def fetch_refs(fetch_options = {})
       before_fetch = Hash[@repository.refs.collect { |r| [r.name, r.target_id] }]
 
       # Prune is not supported by rugged! Deleting all remote refs and re-fetch
       delete_all_remote_branches
       delete_all_tags
-      @repository.remotes['origin'].fetch
+
+      @repository.remotes['origin'].fetch(nil, fetch_options)
 
       delete_all_remote_branches @repository.config['daun.branch.blacklist'].split
       delete_all_tags @repository.config['daun.tag.blacklist'].split
