@@ -8,8 +8,6 @@ module Daun
   class RuggedDaun
     # Creates a new RuggedDaun instance. An empty git repository will be initialized in the specified repository_path.
     #
-    attr_reader :repository
-
     # @param repository_path [String] the path where the git repository will be created
     def initialize(repository_path)
       @repository = Rugged::Repository.init_at(repository_path)
@@ -29,6 +27,11 @@ module Daun
     # Returns the git repository config as hash.
     def config
       @repository.config
+    end
+
+    # Returns the remote url set to this repository.
+    def remote_url
+      @repository.remotes['origin'].url
     end
 
     # Checkout git branches and tags in the git repository working directory.

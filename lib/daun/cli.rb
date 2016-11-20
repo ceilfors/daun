@@ -20,13 +20,9 @@ module Daun
 
     def checkout
       rugged_daun = Daun::RuggedDaun.new(options[:directory])
-
-      repository = rugged_daun.repository
-      origin = repository.remotes['origin']
-
       credentials = nil
       begin
-        origin_uri = GitCloneUrl.parse(origin.url)
+        origin_uri = GitCloneUrl.parse(rugged_daun.remote_url)
         credentials = case origin_uri.scheme
           when nil, 'ssh' then
             Rugged::Credentials::SshKey.new(
