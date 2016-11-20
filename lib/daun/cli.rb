@@ -24,26 +24,21 @@ module Daun
       repository = rugged_daun.repository
       origin = repository.remotes['origin']
 
+      credentials = nil
       begin
         origin_uri = GitCloneUrl.parse(origin.url)
+        credentials = case origin_uri.scheme
+          when nil, 'ssh' then
+            Rugged::Credentials::SshKey.new(
+              :username   => origin_uri.user,
+              :privatekey => options[:ssh_private_key],
+              :publickey  => options[:ssh_public_key],
+            )
+          else nil # Unsupported rugged credentials
+        end
       rescue URI::InvalidComponentError
-        origin_uri = URI.parse(origin.url)
+        # Local protocol?
       end
-
-      is_ssh_scheme = case origin_uri.scheme
-                        when nil, 'ssh' then true
-                        else false
-                      end
-
-      credentials = case (is_ssh_scheme and !origin_uri.user.nil?)
-                      when true then
-                        Rugged::Credentials::SshKey.new(
-                            :username   => origin_uri.user,
-                            :privatekey => options[:ssh_private_key],
-                            :publickey  => options[:ssh_public_key],
-                        )
-                      else nil
-                    end
 
       rugged_daun.checkout credentials
     end
